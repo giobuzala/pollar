@@ -83,7 +83,7 @@ rm(prov_weights, total_n, deff, prov_n_raw)
 ## Province-level 2025 federal election results ----
 
 # Read 2025 federal election results by electoral district, with riding segment classifications
-election_results_raw <- read_csv("Data/Canada 2025 Federal Election Results by Electoral District.csv", col_types = cols(.default = col_character())) %>%
+election_results_raw <- read_csv("data/Canada 2025 Federal Election Results by Electoral District.csv", col_types = cols(.default = col_character())) %>%
   mutate(across(starts_with("VOTE"), ~ as.numeric(.)))
 
 # Compute province-level election vote shares
