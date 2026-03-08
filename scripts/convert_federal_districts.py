@@ -1,3 +1,8 @@
+"""
+Convert federal electoral district shapefile (Statistics Canada) to GeoJSON for the frontend map.
+Expects FederalElectoralDistricts_2025_SHP.zip in frontend/public/data/.
+Output: frontend/public/data/federal-districts-2025.geojson (WGS84, properties FED_NUM, FED_NAME).
+"""
 from __future__ import annotations
 
 import json
@@ -7,7 +12,6 @@ from pathlib import Path
 
 import pyproj
 import shapefile
-
 
 ROOT = Path(__file__).resolve().parents[1]
 ZIP_PATH = ROOT / "frontend" / "public" / "data" / "FederalElectoralDistricts_2025_SHP.zip"

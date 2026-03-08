@@ -1,7 +1,12 @@
+/**
+ * API client for the Pollar backend (Plumber on port 8000).
+ * Fetches metadata and runs national or provincial seat forecasts.
+ */
 import type { ForecastResponse, MetaResponse, Party } from "../types";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
 
+/** GET/POST helper; throws on non-OK with response body as message. */
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     headers: {

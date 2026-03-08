@@ -1,3 +1,4 @@
+# Build per-province effective sample sizes from total_n and province weights (for Dirichlet).
 build_effective_sample_sizes <- function(
   total_n = DEFAULT_TOTAL_N,
   deff = DEFAULT_DEFF,
@@ -7,6 +8,7 @@ build_effective_sample_sizes <- function(
   round(prov_n_raw / deff)
 }
 
+# Load and normalize baseline election CSV: province vote shares, riding base, national baseline.
 load_baseline_data <- function(csv_path) {
   election_results_raw <- readr::read_csv(
     csv_path,

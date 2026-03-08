@@ -1,8 +1,9 @@
 import { useMemo, useRef, useState } from "react";
+import { PARTY_COLORS } from "../constants";
 import type { Party, RidingWinProbability } from "../types";
 import { PARTIES } from "../types";
 
-/** Province order (matches backend DEFAULT_PROV_WEIGHTS). */
+/** Province/territory display order (matches backend DEFAULT_PROV_WEIGHTS). */
 const PROVINCE_ORDER = [
   "British Columbia",
   "Alberta",
@@ -19,20 +20,11 @@ const PROVINCE_ORDER = [
   "Nunavut",
 ];
 
-const PARTY_COLORS: Record<Party, string> = {
-  Liberal: "#d73027",
-  Conservative: "#1f3b73",
-  Bloc: "#2f9fd9",
-  NDP: "#ef7f1a",
-  Green: "#3a9d4b",
-  Other: "#767676",
-};
-
 type RidingProjectionTableProps = {
   ridingData: RidingWinProbability[];
 };
 
-/** Normalize API value to a number (handles scalar, string, or single-element array). */
+/** Coerce API value to number (handles scalar, string, or single-element array). */
 function toNumber(value: unknown): number {
   if (typeof value === "number" && !Number.isNaN(value)) return value;
   if (typeof value === "string" && value.trim() !== "") return Number(value);
@@ -118,6 +110,10 @@ function MultiSelectFilter<T extends string>({
   );
 }
 
+/**
+ * Sortable, filterable table of all ridings: incumbent, projected winner,
+ * and per-party win probability. Filters by province, riding name, incumbent, and winner.
+ */
 export function RidingProjectionTable({ ridingData }: RidingProjectionTableProps) {
   const [filterProvinces, setFilterProvinces] = useState<string[]>([]);
   const [filterRiding, setFilterRiding] = useState("");

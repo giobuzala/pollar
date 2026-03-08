@@ -1,21 +1,15 @@
+import { PARTY_COLORS, TOTAL_SEATS } from "../constants";
 import { PARTIES, type Party } from "../types";
-
-const PARTY_COLORS: Record<Party, string> = {
-  Liberal: "#d73027",
-  Conservative: "#1f3b73",
-  Bloc: "#2f9fd9",
-  NDP: "#ef7f1a",
-  Green: "#3a9d4b",
-  Other: "#767676",
-};
-
-const TOTAL_SEATS = 343;
 
 type CurrentSeatDistributionProps = {
   baselineSeats: Record<Party, number>;
   majorityThreshold: number;
 };
 
+/**
+ * Shows the current (2025 election) seat distribution by party as horizontal
+ * bars, with a majority threshold line. Used alongside the projected seat summary.
+ */
 export function CurrentSeatDistribution({ baselineSeats, majorityThreshold }: CurrentSeatDistributionProps) {
   const majorityPosition = `${(majorityThreshold / TOTAL_SEATS) * 100}%`;
 

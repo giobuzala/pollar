@@ -2,15 +2,21 @@ import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointer
 import { geoConicConformal, geoPath } from "d3-geo";
 import proj4 from "proj4";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
+import { PARTY_COLORS } from "../constants";
 import type { Party, RidingWinProbability } from "../types";
 import { PARTIES } from "../types";
 
+/* Canadian Lambert Conformal Conic (EPSG:3978) and WGS84 for GeoJSON. */
 proj4.defs(
   "EPSG:3978",
   "+proj=lcc +lat_0=49 +lon_0=-95 +lat_1=49 +lat_2=77 +x_0=0 +y_0=0 +ellps=GRS80 +units=m +no_defs"
 );
 proj4.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs");
 
+/**
+ * Converts GeoJSON coordinates from EPSG:3978 (Canadian LCC) to WGS84 if needed.
+ * Detects 3978 by checking if first coordinate is outside lat/lon bounds.
+ */
 function geoJsonToWGS84(geojson: FeatureCollection<Geometry>): FeatureCollection<Geometry> {
   const first = geojson.features[0]?.geometry;
   if (!first || first.type !== "Polygon" && first.type !== "MultiPolygon") return geojson;
@@ -48,15 +54,6 @@ function geoJsonToWGS84(geojson: FeatureCollection<Geometry>): FeatureCollection
     }),
   };
 }
-
-const PARTY_COLORS: Record<Party, string> = {
-  Liberal: "#d73027",
-  Conservative: "#1f3b73",
-  Bloc: "#2f9fd9",
-  NDP: "#ef7f1a",
-  Green: "#3a9d4b",
-  Other: "#767676",
-};
 
 type ProjectionMapProps = {
   ridingData: RidingWinProbability[];
@@ -262,9 +259,10 @@ export function ProjectionMap({ ridingData, embedded = false }: ProjectionMapPro
 
   useEffect(() => {
     const el = svgRef.current;
-    if (!el) return;
-    el.addEventListener("wheel", handleWheelRef.current, { passive: false });
-    return () => el.removeEventListener("wheel", handleWheelRef.current);
+    const handler = handleWheelRef.current;
+    if (!el || !handler) return;
+    el.addEventListener("wheel", handler, { passive: false });
+    return () => el.removeEventListener("wheel", handler);
   }, [geojson, outline]);
 
   if (!geojson) {

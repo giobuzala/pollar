@@ -1,3 +1,4 @@
+# Normalize a vote-share vector to sum to 1; optional floor at 0.
 normalize_share_vector <- function(x, zero_floor = TRUE) {
   x <- as.numeric(x)
   names(x) <- names(x)
@@ -7,6 +8,7 @@ normalize_share_vector <- function(x, zero_floor = TRUE) {
   x / total
 }
 
+# Coerce API payload (list/vector) to named party vector; requires Liberal, Conservative, NDP, Green, Other.
 coerce_party_vector <- function(input, parties = PARTIES) {
   if (is.null(input)) stop("Missing party vote-share payload.", call. = FALSE)
   vec <- rep(NA_real_, length(parties))
@@ -54,6 +56,7 @@ province_payload_to_matrix <- function(payload, province_names, parties = PARTIE
   as.data.frame(polling, stringsAsFactors = FALSE)
 }
 
+# Effective sample sizes from payload or default (total_n + province weights).
 sample_sizes_from_payload <- function(
   sample_sizes,
   province_names,
@@ -110,6 +113,7 @@ national_to_provincial_matrix <- function(
   as.data.frame(polling, stringsAsFactors = FALSE)
 }
 
+# Turn run_seat_forecast_mc result into JSON-friendly list (seat summary, probs, riding list, optional vote shares).
 format_forecast_response <- function(result) {
   seat_summary <- result$seat_summary |>
     tidyr::pivot_longer(

@@ -1,3 +1,5 @@
+# Plumber API for Pollar: metadata and national/provincial seat forecasts.
+# Run from backend/: Rscript run_api.R (serves on port 8000).
 library(plumber)
 library(dplyr)
 library(tidyr)
@@ -10,7 +12,7 @@ source("R/data_loaders.R")
 source("R/model_core.R")
 source("R/input_transforms.R")
 
-# Canada 2025 Federal Election Results by Electoral District.csv (run from backend/ or project root)
+# Baseline CSV path: try project root then backend/Data.
 BASELINE_CSV <- if (file.exists("../Data/Canada 2025 Federal Election Results by Electoral District.csv")) {
   "../Data/Canada 2025 Federal Election Results by Electoral District.csv"
 } else {
@@ -125,14 +127,6 @@ function(req, res) {
     election_results = BASELINE$election_results
   )
 
-  response <- format_forecast_response(result)
-  response$derived_provincial_polling <- jsonlite::fromJSON(
-    jsonlite::toJSON(
-      tibble::rownames_to_column(polling_results, var = "party"),
-      dataframe = "rows",
-      auto_unbox = TRUE
-    )
-  )
-  response
+  format_forecast_response(result)
 }
 

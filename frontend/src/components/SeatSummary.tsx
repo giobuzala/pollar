@@ -1,18 +1,15 @@
+import { PARTY_COLORS, TOTAL_SEATS } from "../constants";
 import { PARTIES, type ForecastResponse, type Party } from "../types";
-
-const PARTY_COLORS: Record<Party, string> = {
-  Liberal: "#d73027",
-  Conservative: "#1f3b73",
-  Bloc: "#2f9fd9",
-  NDP: "#ef7f1a",
-  Green: "#3a9d4b",
-  Other: "#767676",
-};
 
 type SeatSummaryProps = {
   forecast: ForecastResponse | null;
 };
 
+/**
+ * Renders the seat projection panel: bar chart of median seats by party,
+ * majority/plurality probabilities, and range (p05–p95). Medians are rounded
+ * so they sum to TOTAL_SEATS for display.
+ */
 export function SeatSummary({ forecast }: SeatSummaryProps) {
   if (!forecast) {
     return (
@@ -23,8 +20,6 @@ export function SeatSummary({ forecast }: SeatSummaryProps) {
     );
   }
 
-  const totalSeats = 343;
-
   // Display medians that sum to totalSeats: round normally, then adjust the party closest to rounding the other way
   const rows = PARTIES.map((party) => {
     const row = forecast.seat_summary.find((entry) => entry.party === party);
@@ -33,16 +28,16 @@ export function SeatSummary({ forecast }: SeatSummaryProps) {
 
   const rounded = rows.map(({ row }) => Math.round(row.median));
   const sum = rounded.reduce((a, b) => a + b, 0);
-  let displayMedians = rounded.slice();
-  if (sum !== totalSeats && rows.length > 0) {
-    if (sum < totalSeats) {
-      const need = totalSeats - sum;
+  const displayMedians = rounded.slice();
+  if (sum !== TOTAL_SEATS && rows.length > 0) {
+    if (sum < TOTAL_SEATS) {
+      const need = TOTAL_SEATS - sum;
       const byFrac = rows
         .map(({ row }, i) => ({ i, frac: row.median - Math.floor(row.median) }))
         .sort((a, b) => b.frac - a.frac);
       for (let k = 0; k < need; k++) displayMedians[byFrac[k % byFrac.length].i]++;
     } else {
-      const need = sum - totalSeats;
+      const need = sum - TOTAL_SEATS;
       const byFrac = rows
         .map(({ row }, i) => ({ i, frac: Math.ceil(row.median) - row.median }))
         .sort((a, b) => b.frac - a.frac);
@@ -61,11 +56,11 @@ export function SeatSummary({ forecast }: SeatSummaryProps) {
           const row = forecast.seat_summary.find((entry) => entry.party === party);
           if (!row) return null;
 
-          const width = `${(row.median / totalSeats) * 100}%`;
+          const width = `${(row.median / TOTAL_SEATS) * 100}%`;
           const majorityChance = Math.round((forecast.probabilities.majority[party] ?? 0) * 100);
           const pluralityChance = Math.round((forecast.probabilities.plurality[party] ?? 0) * 100);
           const isFirst = index === 0;
-          const majorityPosition = `${(forecast.majority_threshold / totalSeats) * 100}%`;
+          const majorityPosition = `${(forecast.majority_threshold / TOTAL_SEATS) * 100}%`;
           const displayMedian = medianByParty[party] ?? Math.round(row.median);
 
           return (

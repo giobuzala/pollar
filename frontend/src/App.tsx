@@ -1,3 +1,8 @@
+/**
+ * Pollar — Canadian federal election seat projection from polling data.
+ * Main app: loads API metadata, manages poll inputs and forecast state,
+ * and renders current distribution, seat projection, vote-share table, and riding map/table.
+ */
 import { useEffect, useMemo, useState } from "react";
 import { CurrentSeatDistribution } from "./components/CurrentSeatDistribution";
 import { PollInputForm } from "./components/PollInputForm";

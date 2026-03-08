@@ -19,14 +19,10 @@ type PollInputFormProps = {
   isLoading: boolean;
 };
 
-// Only 100.0% is valid. Use tolerance so float rounding (e.g. 0.1 + 0.2 ≠ 0.3) still accepts 100.0%.
-const TOTAL_TOLERANCE = 0.0005; // 0.05%: accept any sum that displays as 100.0% (one decimal)
+/* Accept sum as 100% if within 0.05% (avoids float rounding issues). */
+const TOTAL_TOLERANCE = 0.0005;
 
-function toPercent(value: number): string {
-  return (value * 100).toFixed(1);
-}
-
-/** Format for input display: whole numbers without decimal (e.g. "13") so typing double digits works. */
+/** Format vote share for input: show whole or one decimal (e.g. "13" or "12.5") for easier typing. */
 function formatPercentForInput(value: number): string {
   const n = Math.round(value * 1000) / 10;
   return n % 1 === 0 ? String(Math.round(n)) : n.toFixed(1);
@@ -38,10 +34,6 @@ function sumPartyVector(v: Record<Party, number>): number {
 
 function totalIsValid(sum: number): boolean {
   return Math.abs(sum - 1) <= TOTAL_TOLERANCE;
-}
-
-function totalOverflow(sum: number): boolean {
-  return sum > 1 + TOTAL_TOLERANCE;
 }
 
 function ParamInfoButton() {
@@ -70,15 +62,16 @@ function ParamInfoButton() {
   );
 }
 
+/**
+ * Form for polling inputs: national or provincial vote shares, simulation count,
+ * swing method, and sample size. Validates that totals are 100% before allowing Run Forecast.
+ */
 export function PollInputForm(props: PollInputFormProps) {
   const nationalTotal = sumPartyVector(props.nationalPoll);
   const nationalValid = totalIsValid(nationalTotal);
-  const nationalOverflow = totalOverflow(nationalTotal);
   const provincialTotals = props.provinces.map((prov) => sumPartyVector(props.provincialPolls[prov] ?? {}));
   const provincialValid = provincialTotals.every((s) => totalIsValid(s));
-  const provincialOverflow = provincialTotals.some((s) => totalOverflow(s));
   const totalsValid = props.mode === "national" ? nationalValid : provincialValid;
-  const totalsOverflow = props.mode === "national" ? nationalOverflow : provincialOverflow;
 
   return (
     <section className="panel">

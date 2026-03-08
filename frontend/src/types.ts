@@ -1,3 +1,7 @@
+/**
+ * Shared TypeScript types for the Pollar frontend.
+ * Aligns with backend party names and API response shapes.
+ */
 export type Party = "Liberal" | "Conservative" | "Bloc" | "NDP" | "Green" | "Other";
 
 export type Mode = "national" | "provincial";

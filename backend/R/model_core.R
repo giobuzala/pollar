@@ -1,3 +1,5 @@
+# Monte Carlo seat forecast: Dirichlet poll simulation, province swing, riding elasticity.
+# logit/inv_logit: proportional (logit) swing; elasticity scales swing by riding margin.
 logit <- function(p, eps = 1e-6) {
   p <- pmin(pmax(p, eps), 1 - eps)
   log(p / (1 - p))
@@ -7,6 +9,7 @@ inv_logit <- function(x) {
   1 / (1 + exp(-x))
 }
 
+# Draw one Dirichlet sample for a province (mean = polling_results, concentration from prov_n).
 simulate_province_poll <- function(prov, polling_results, prov_n) {
   mean_vec <- polling_results[, prov]
   if (is.null(names(mean_vec)) && !is.null(rownames(polling_results))) {
@@ -26,6 +29,7 @@ simulate_province_poll <- function(prov, polling_results, prov_n) {
   sim_draw
 }
 
+# Provincial swing: simulated poll minus baseline; Absolute = raw diff, Proportional = logit diff.
 compute_prov_swing <- function(
   prov,
   polling_results,
@@ -50,6 +54,7 @@ compute_prov_swing <- function(
   }
 }
 
+# Riding elasticity from margin (1st - 2nd): tighter races get higher elasticity (up to 1.30).
 compute_elasticity <- function(vote_matrix) {
   if (is.null(dim(vote_matrix)) || nrow(vote_matrix) < 1 || ncol(vote_matrix) < 2) {
     stop("compute_elasticity() requires a matrix with >= 1 row and >= 2 party columns.", call. = FALSE)
@@ -67,6 +72,7 @@ compute_elasticity <- function(vote_matrix) {
   )
 }
 
+# Apply provincial swing to all ridings in province (elasticity-weighted).
 apply_swing_to_ridings <- function(
   prov,
   base_riding_results,
@@ -136,6 +142,7 @@ build_province_contexts <- function(base_riding_results, election_results) {
   )
 }
 
+# Simulate one run: draw poll, apply swing to ridings, return winner indices and province vote share.
 simulate_province_winners <- function(context, polling_results, prov_n, swing_method) {
   sim_poll <- simulate_province_poll(context$province, polling_results = polling_results, prov_n = prov_n)
   sim_poll <- sim_poll[context$active_parties]
@@ -180,6 +187,7 @@ determine_winners <- function(riding_df) {
   riding_df
 }
 
+# Main entry: n_sims Monte Carlo runs, seat counts, riding win probs, majority/plurality probs.
 run_seat_forecast_mc <- function(
   n_sims = 1000L,
   swing_method = "Proportional",
