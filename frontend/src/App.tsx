@@ -6,25 +6,40 @@ import { fetchMeta, runNationalForecast, runProvincialForecast } from "./lib/api
 import type { ForecastResponse, MetaResponse, Mode, Party } from "./types";
 import "./App.css";
 
+/** Default: 2025 federal election actual results (Elected/Share). Other = PPC + Independent + Christian Heritage + rounding. */
 function buildDefaultPartyVector(): Record<Party, number> {
   return {
-    Liberal: 0.44,
-    Conservative: 0.36,
-    Bloc: 0.07,
-    NDP: 0.08,
-    Green: 0.03,
-    Other: 0.02,
+    Liberal: 0.438,
+    Conservative: 0.413,
+    Bloc: 0.063,
+    NDP: 0.063,
+    Green: 0.012,
+    Other: 0.011,
   };
 }
 
-function buildDefaultProvincial(provinces: string[]): Record<string, Record<Party, number>> {
-  const national = buildDefaultPartyVector();
-  const out: Record<string, Record<Party, number>> = {};
+/** 2025 actual provincial vote share (rounded to 1 decimal place as %). Bloc = 0 outside Quebec. */
+const DEFAULT_PROVINCIAL_2025: Record<string, Record<Party, number>> = {
+  "British Columbia": { Liberal: 0.418, Conservative: 0.412, Bloc: 0, NDP: 0.13, Green: 0.03, Other: 0.01 },
+  Alberta: { Liberal: 0.279, Conservative: 0.636, Bloc: 0, NDP: 0.063, Green: 0.004, Other: 0.018 },
+  Saskatchewan: { Liberal: 0.266, Conservative: 0.646, Bloc: 0, NDP: 0.075, Green: 0.005, Other: 0.008 },
+  Manitoba: { Liberal: 0.407, Conservative: 0.464, Bloc: 0, NDP: 0.11, Green: 0.007, Other: 0.012 },
+  Ontario: { Liberal: 0.492, Conservative: 0.438, Bloc: 0, NDP: 0.048, Green: 0.011, Other: 0.011 },
+  Quebec: { Liberal: 0.426, Conservative: 0.233, Bloc: 0.277, NDP: 0.045, Green: 0.009, Other: 0.01 },
+  "New Brunswick": { Liberal: 0.536, Conservative: 0.407, Bloc: 0, NDP: 0.029, Green: 0.017, Other: 0.011 },
+  "Nova Scotia": { Liberal: 0.574, Conservative: 0.353, Bloc: 0, NDP: 0.051, Green: 0.009, Other: 0.013 },
+  "Prince Edward Island": { Liberal: 0.576, Conservative: 0.369, Bloc: 0, NDP: 0.024, Green: 0.022, Other: 0.009 },
+  "Newfoundland and Labrador": { Liberal: 0.541, Conservative: 0.397, Bloc: 0, NDP: 0.055, Green: 0.001, Other: 0.006 },
+  Yukon: { Liberal: 0.531, Conservative: 0.385, Bloc: 0, NDP: 0.063, Green: 0.021, Other: 0 },
+  "Northwest Territories": { Liberal: 0.535, Conservative: 0.333, Bloc: 0, NDP: 0.122, Green: 0.01, Other: 0 },
+  Nunavut: { Liberal: 0.367, Conservative: 0.26, Bloc: 0, NDP: 0.373, Green: 0, Other: 0 },
+};
 
+function buildDefaultProvincial(provinces: string[]): Record<string, Record<Party, number>> {
+  const out: Record<string, Record<Party, number>> = {};
   for (const province of provinces) {
-    const row = { ...national };
-    if (province !== "Quebec") row.Bloc = 0;
-    out[province] = row;
+    out[province] = DEFAULT_PROVINCIAL_2025[province] ?? { ...buildDefaultPartyVector(), Bloc: province !== "Quebec" ? 0 : 0.063 };
+    if (province !== "Quebec") out[province].Bloc = 0;
   }
   return out;
 }
@@ -104,9 +119,9 @@ function App() {
   return (
     <main className="layout">
       <header className="hero">
-        <h1>Pollar</h1>
+        <h1>pollar</h1>
         <p>
-          Enter national or provincial polling data to project federal seat outcomes across Canadian ridings.
+          Cold numbers, clear projections. Enter national or provincial polling data to project federal seat outcomes across Canadian ridings.
         </p>
       </header>
 

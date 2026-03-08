@@ -32,13 +32,21 @@ function() {
   list(status = "ok")
 }
 
-#* Return baseline metadata used by the UI
+#* Return baseline metadata used by the UI (includes 2025 provincial defaults)
 #* @get /meta
 function() {
+  er <- BASELINE$election_results
+  default_provincial_polls <- list()
+  for (prov in BASELINE$province_names) {
+    vec <- er[, prov, drop = TRUE]
+    vec[is.na(vec)] <- 0
+    default_provincial_polls[[prov]] <- as.list(vec)
+  }
   list(
     parties = PARTIES,
     provinces = BASELINE$province_names,
-    majority_threshold = jsonlite::unbox(floor(nrow(BASELINE$riding_base) / 2) + 1L)
+    majority_threshold = jsonlite::unbox(floor(nrow(BASELINE$riding_base) / 2) + 1L),
+    default_provincial_polls = default_provincial_polls
   )
 }
 

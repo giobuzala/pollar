@@ -50,4 +50,6 @@ export type MetaResponse = {
   parties: Party[];
   provinces: string[];
   majority_threshold: number;
+  /** 2025 actual provincial vote shares; used as default when present */
+  default_provincial_polls?: Record<string, Record<Party, number>>;
 };

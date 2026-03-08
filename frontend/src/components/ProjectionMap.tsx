@@ -92,7 +92,7 @@ export function ProjectionMap({ ridingData }: ProjectionMapProps) {
     return geojson.features.flatMap((feature: Feature<Geometry>, index: number) => {
       const fedCode = normalizeCode(feature.properties?.FED_NUM);
       const riding = fedCode ? ridingByCode.get(fedCode) : undefined;
-      const fill = riding ? PARTY_COLORS[riding.projected_winner] : "#d6d6d6";
+      const fill = riding ? PARTY_COLORS[riding.projected_winner] : "#d4e6f2";
       const path = pathGenerator(feature);
       if (!path) return [];
 

@@ -1,9 +1,29 @@
 :root {
-  font-family: "Segoe UI", "Inter", sans-serif;
-  line-height: 1.4;
+  /* Pollar theme: polar bear + polling — icy, clear, trustworthy */
+  --polar-bg: #f0f6fb;
+  --polar-bg-strong: #e2eef6;
+  --polar-surface: #ffffff;
+  --polar-border: #b8d4e8;
+  --polar-border-soft: #d4e6f2;
+  --polar-text: #1a2d3d;
+  --polar-text-muted: #4a6578;
+  --polar-accent: #0e6b9e;
+  --polar-accent-hover: #0a5a82;
+  --polar-hero-start: #1a365d;
+  --polar-hero-mid: #2c5282;
+  --polar-hero-end: #2b6cb0;
+  --polar-focus: rgba(14, 107, 158, 0.25);
+  --polar-error-bg: #fef2f2;
+  --polar-error-border: #fecaca;
+  --polar-error-text: #b91c1c;
+  --polar-shadow: rgba(26, 54, 93, 0.08);
+  --polar-shadow-strong: rgba(26, 54, 93, 0.12);
+
+  font-family: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  line-height: 1.5;
   font-weight: 400;
-  color: #2a1215;
-  background-color: #f7f2f1;
+  color: var(--polar-text);
+  background-color: var(--polar-bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -14,8 +34,12 @@
   box-sizing: border-box;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
   min-width: 320px;
-  background: radial-gradient(circle at 20% 0%, #ffffff, #f3ece9 65%);
+  background: radial-gradient(ellipse 120% 80% at 50% -20%, var(--polar-surface), var(--polar-bg-strong) 50%, var(--polar-bg));
 }

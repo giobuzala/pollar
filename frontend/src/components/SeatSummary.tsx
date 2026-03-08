@@ -23,7 +23,7 @@ export function SeatSummary({ forecast }: SeatSummaryProps) {
     );
   }
 
-  const maxMean = Math.max(...forecast.seat_summary.map((item) => item.mean));
+  const totalSeats = 343;
 
   return (
     <section className="panel">
@@ -31,28 +31,31 @@ export function SeatSummary({ forecast }: SeatSummaryProps) {
       <p className="subtle">Majority threshold: {forecast.majority_threshold} seats</p>
 
       <div className="seatBars">
-        {PARTIES.map((party) => {
+        {PARTIES.map((party, index) => {
           const row = forecast.seat_summary.find((entry) => entry.party === party);
           if (!row) return null;
 
-          const width = `${(row.mean / maxMean) * 100}%`;
+          const width = `${(row.median / totalSeats) * 100}%`;
           const majorityChance = Math.round((forecast.probabilities.majority[party] ?? 0) * 100);
           const pluralityChance = Math.round((forecast.probabilities.plurality[party] ?? 0) * 100);
+          const isFirst = index === 0;
+          const majorityPosition = `${(forecast.majority_threshold / totalSeats) * 100}%`;
 
           return (
             <div key={party} className="seatRow">
               <div className="seatRowHeader">
                 <strong>{party}</strong>
                 <span>
-                  Mean {row.mean.toFixed(1)} | Range {row.p05.toFixed(0)}-{row.p95.toFixed(0)}
+                  Median: {Math.round(row.median)} | Range: {row.p05.toFixed(0)}-{row.p95.toFixed(0)}
                 </span>
               </div>
               <div className="barTrack">
                 <div className="barFill" style={{ width, background: PARTY_COLORS[party] }} />
+                <div className="majorityLine" style={{ left: majorityPosition }} aria-hidden />
               </div>
               <div className="probabilities">
-                <span>Majority: {majorityChance}%</span>
-                <span>Most seats: {pluralityChance}%</span>
+                <span>{isFirst ? `Probability of majority: ${majorityChance}%` : `${majorityChance}%`}</span>
+                <span>{isFirst ? `Probability of plurality: ${pluralityChance}%` : `${pluralityChance}%`}</span>
               </div>
             </div>
           );
