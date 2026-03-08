@@ -44,11 +44,7 @@ function ParamInfoButton() {
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
     >
-      <button
-        type="button"
-        className="paramInfoButton"
-        title="Simulations, swing method, and sample size help"
-      >
+      <button type="button" className="paramInfoButton">
         ?
       </button>
       {show ? (
