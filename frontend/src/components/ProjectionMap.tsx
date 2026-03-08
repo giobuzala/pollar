@@ -71,8 +71,10 @@ function formatRidingName(name: string): string {
   return name.replace(/—/g, "–");
 }
 
-function normalizeForSearch(s: string): string {
-  return s
+/** Normalize for search: lowercase, strip diacritics, collapse punctuation and spaces. Safe for undefined. */
+function normalizeForSearch(s: string | undefined): string {
+  const str = typeof s === "string" ? s : "";
+  return str
     .toLowerCase()
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
@@ -82,8 +84,8 @@ function normalizeForSearch(s: string): string {
 }
 
 function ridingSearchScore(queryWords: string[], riding: RidingWinProbability): number {
-  const nameNorm = normalizeForSearch(riding.FED_NAME);
-  const provinceNorm = normalizeForSearch(riding.PROVINCE);
+  const nameNorm = normalizeForSearch(getRidingName(riding));
+  const provinceNorm = normalizeForSearch(getRidingProvince(riding));
   const searchable = `${nameNorm} ${provinceNorm}`;
   const fullQuery = queryWords.join(" ");
   let score = 0;
@@ -103,7 +105,26 @@ const MIN_SCALE = 1;
 const MAX_SCALE = 8;
 const FOCUS_MAX_SCALE = 24;
 
+/** Get a string from a riding row; API may use FED_NAME or fed_name etc. */
+function getRidingName(r: RidingWinProbability | Record<string, unknown>): string {
+  const row = r as Record<string, unknown>;
+  const v = row.FED_NAME ?? row.fed_name ?? row.FedName ?? "";
+  return typeof v === "string" ? v : String(v ?? "");
+}
+
+/** Get province string from a riding row. */
+function getRidingProvince(r: RidingWinProbability | Record<string, unknown>): string {
+  const row = r as Record<string, unknown>;
+  const v = row.PROVINCE ?? row.province ?? row.Province ?? "";
+  return typeof v === "string" ? v : String(v ?? "");
+}
+
 export function ProjectionMap({ ridingData, embedded = false }: ProjectionMapProps) {
+  const data = useMemo(() => {
+    if (Array.isArray(ridingData)) return ridingData;
+    if (ridingData && typeof ridingData === "object" && !Array.isArray(ridingData)) return Object.values(ridingData);
+    return [];
+  }, [ridingData]);
   const [geojson, setGeojson] = useState<FeatureCollection<Geometry> | null>(null);
   const [outline, setOutline] = useState<FeatureCollection<Geometry> | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -178,26 +199,29 @@ export function ProjectionMap({ ridingData, embedded = false }: ProjectionMapPro
 
   const ridingByCode = useMemo(() => {
     const lookup = new Map<number, RidingWinProbability>();
-    for (const item of ridingData) {
+    for (const item of data) {
       const code = typeof item.FED_CODE === "number" ? item.FED_CODE : Number(item.FED_CODE);
       if (!Number.isNaN(code)) lookup.set(code, item);
     }
     return lookup;
-  }, [ridingData]);
+  }, [data]);
 
   const ridingSearchResults = useMemo(() => {
     const q = ridingSearch.trim();
     if (q.length < 2) return [];
-    const queryWords = normalizeForSearch(q).split(" ").filter(Boolean);
+    const normalizedQuery = normalizeForSearch(q);
+    const queryWords = normalizedQuery.split(/\s+/).filter((w) => w.length > 0);
     if (queryWords.length === 0) return [];
-    return ridingData
+    return data
       .filter((r) => {
-        const searchable = `${normalizeForSearch(r.FED_NAME)} ${normalizeForSearch(r.PROVINCE)}`;
+        const namePart = normalizeForSearch(getRidingName(r));
+        const provPart = normalizeForSearch(getRidingProvince(r));
+        const searchable = `${namePart} ${provPart}`;
         return queryWords.every((w) => searchable.includes(w));
       })
       .sort((a, b) => ridingSearchScore(queryWords, b) - ridingSearchScore(queryWords, a))
       .slice(0, 12);
-  }, [ridingData, ridingSearch]);
+  }, [data, ridingSearch]);
 
   const pathGenerator = useMemo(() => {
     const fitTo = outline ?? geojson;
@@ -217,8 +241,8 @@ export function ProjectionMap({ ridingData, embedded = false }: ProjectionMapPro
       const fedCode = normalizeCode(props?.FED_NUM);
       let riding = fedCode != null ? ridingByCode.get(fedCode) : undefined;
       if (!riding && props?.FED_NAME) {
-        const nameKey = normalizeForSearch(props.FED_NAME);
-        riding = ridingData.find((r) => normalizeForSearch(r.FED_NAME) === nameKey) ?? undefined;
+        const nameKey = normalizeForSearch(String(props.FED_NAME));
+        riding = data.find((r) => normalizeForSearch(getRidingName(r)) === nameKey) ?? undefined;
       }
       const fill = riding && riding.projected_winner in PARTY_COLORS
         ? PARTY_COLORS[riding.projected_winner as Party]
@@ -227,7 +251,7 @@ export function ProjectionMap({ ridingData, embedded = false }: ProjectionMapPro
       if (!path) return [];
       return [{ key: `${fedCode ?? "missing"}-${index}`, path, fill, riding: riding ?? null, feature }];
     });
-  }, [geojson, pathGenerator, ridingByCode, ridingData]);
+  }, [geojson, pathGenerator, ridingByCode, data]);
 
   const outlinePath = useMemo(() => {
     const source = outline ?? geojson;
@@ -435,8 +459,8 @@ export function ProjectionMap({ ridingData, embedded = false }: ProjectionMapPro
                   selectRidingFromSearch(r);
                 }}
               >
-                <strong>{formatRidingName(r.FED_NAME)}</strong>
-                <span>{r.PROVINCE}</span>
+                <strong>{formatRidingName(getRidingName(r))}</strong>
+                <span>{getRidingProvince(r)}</span>
               </li>
             ))}
             {ridingSearchResults.length === 0 && (
@@ -566,8 +590,8 @@ export function ProjectionMap({ ridingData, embedded = false }: ProjectionMapPro
       {(tooltipRiding ?? pinnedRiding) && (() => {
         const r = tooltipRiding ?? pinnedRiding!;
         if (!r || typeof r !== "object") return null;
-        const fedName = typeof r.FED_NAME === "string" ? r.FED_NAME : String(r.FED_NAME ?? "—");
-        const province = typeof r.PROVINCE === "string" ? r.PROVINCE : String(r.PROVINCE ?? "");
+        const fedName = getRidingName(r) || "—";
+        const province = getRidingProvince(r) || "";
         const incumbent = (r as { incumbent?: Party; WINNER?: Party }).incumbent ?? (r as { WINNER?: Party }).WINNER ?? "—";
         const projectedWinner = typeof r.projected_winner === "string" ? r.projected_winner : String(r.projected_winner ?? "—");
         return (
