@@ -122,7 +122,7 @@ simulate_province_poll <- function(prov, polling_results, prov_n) {
 #' and turns it into a "swing" vector: the change from that province's baseline
 #' (last election) to the simulated poll. This swing is later applied to every
 #' riding in the province.
-#' 
+#'
 #' Absolute = additive on vote share
 #' Proportional = additive on log-odds (then converted back to shares when applied to ridings)
 #'

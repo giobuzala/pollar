@@ -1,5 +1,5 @@
 /**
- * Pollar — Canadian federal election seat projection from polling data.
+ * pollar — Canadian federal election seat projection from polling data.
  * Main app: loads API metadata, manages poll inputs and forecast state,
  * and renders current distribution, seat projection, vote-share table, and riding map/table.
  */
@@ -95,6 +95,7 @@ function App() {
     return forecast.projected_vote_shares;
   }, [forecast]);
 
+  /** Run national or provincial forecast and store result; surfaces API errors. */
   async function handleRunForecast() {
     try {
       setIsLoading(true);
@@ -123,6 +124,7 @@ function App() {
     }
   }
 
+  /* Block until /meta has loaded; show error or loading state. */
   if (!meta) {
     if (error) {
       return (
@@ -267,7 +269,7 @@ function App() {
         {methodologyOpen ? (
           <div className="methodologyContent">
           <p>
-            Pollar projects federal seat outcomes from polling data using a <strong>Monte Carlo simulation</strong> with riding-level swing. The baseline is the <strong>2025 federal election</strong>: actual vote shares by electoral district and by province.
+            pollar projects federal seat outcomes from polling data using a <strong>Monte Carlo simulation</strong> with riding-level swing. The baseline is the <strong>2025 federal election</strong>: actual vote shares by electoral district and by province.
           </p>
           <p>
             <strong>Input.</strong> You can enter either a single <strong>national poll</strong> (vote shares by party) or <strong>provincial polls</strong> for each province. In national mode, the app converts the national poll into province-level estimates by applying the national swing (poll minus 2025 national result) to each province’s 2025 result, then normalizing. The Bloc Québécois is included only in Quebec; outside Quebec it is set to zero and other shares are rescaled.

@@ -10,7 +10,7 @@ The riding projection map needs GeoJSON boundary files:
 1. Download the [Federal Electoral Districts 2025 shapefile](https://elections.ca/content.aspx?dir=cir%2FmapsCorner%2Fvector&document=index&lang=e&section=res) and place the zip as:
    `frontend/public/data/FederalElectoralDistricts_2025_SHP.zip`
 
-2. From the project root, run:
+2. From the `frontend/` directory, run:
    ```bash
    python scripts/convert_federal_districts.py
    ```

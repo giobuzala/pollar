@@ -1,6 +1,8 @@
 rm(list = ls())
 
-# See README.md for a detailed description of this script and its methodology.
+# See Methodology.md in project root for a detailed description of this script and its methodology.
+# Run from project root: setwd("..") then source("scripts/Federal Election Seat Forecast.R")
+# Or run from scripts/: source("Federal Election Seat Forecast.R") (and ensure Data/ is at ../Data/).
 
 ## Libraries ----
 
@@ -82,8 +84,8 @@ rm(prov_weights, total_n, deff, prov_n_raw)
 
 ## Province-level 2025 federal election results ----
 
-# Read 2025 federal election results by electoral district, with riding segment classifications
-election_results_raw <- read_csv("data/Canada 2025 Federal Election Results by Electoral District.csv", col_types = cols(.default = col_character())) %>%
+# Read 2025 federal election results by electoral district (path relative to project root)
+election_results_raw <- read_csv("../Data/Canada 2025 Federal Election Results by Electoral District.csv", col_types = cols(.default = col_character())) %>%
   mutate(across(starts_with("VOTE"), ~ as.numeric(.)))
 
 # Compute province-level election vote shares
@@ -186,7 +188,7 @@ rm(prov_n, n_sims)
 ## Plot 1: 2025 Election vs projected seats ----
 
 # 2025 election seat counts
-election_2025_seats <- 
+election_2025_seats <-
   riding_base %>%
   count(WINNER, name = "2025 Election Seats") %>%
   right_join(tibble(Party = parties), by = c("WINNER" = "Party")) %>%
@@ -269,10 +271,10 @@ party_summary_chart <- seat_sims %>%
 
 # Panel factory
 make_panel <- function(party, i, n_total) {
-  
+
   df <- filter(seat_sims, Party == party)
   stats <- filter(party_summary_chart, Party == party) |> slice(1)
-  
+
   # Majority probability label
   p_maj_str <-
     if (stats$p_majority >= 0.99) {
@@ -283,31 +285,31 @@ make_panel <- function(party, i, n_total) {
     } else {
       NA_character_
     }
-  
+
   show_majority_line <-
     stats$p_majority > 0.001 |
     stats$median_seats > majority_threshold * 0.5
-  
+
   p <- ggplot(df, aes(Seats, after_stat(density) * 100, fill = Party)) +
-    
+
     stat_density(geom = "area", alpha = 0.8, color = NA) +
-    
+
     annotate("text", 2, Inf, label = party,
              hjust = 0, vjust = 1.5,
              fontface = "bold", size = 3.9, color = "black") +
-    
+
     annotate("text", 248, Inf,
              label = paste("Median seats:", stats$median_seats),
              hjust = 1, vjust = 1.5,
              fontface = "bold", size = 3.5, color = "black") +
-    
+
     scale_fill_manual(values = party_colors) +
     scale_x_continuous(limits = c(0, 250), breaks = seq(0, 250, 50), expand = c(0, 0)) +
     scale_y_continuous(limits = c(0, 5.5), expand = expansion(mult = c(0, .1))) +
-    
+
     guides(fill = "none") +
     labs(x = if (i == n_total) "Seats forecasted" else NULL) +
-    
+
     theme_minimal(base_size = 13) +
     theme(
       plot.margin = margin(1, 16, 1, 16),
@@ -319,14 +321,14 @@ make_panel <- function(party, i, n_total) {
       axis.title.x = element_text(size = 11),
       panel.grid = element_blank()
     )
-  
+
   # Majority line
   if (show_majority_line) {
     p <- p + geom_vline(
       xintercept = majority_threshold, linetype = "dotted", linewidth  = 0.7, color = "grey50"
     )
   }
-  
+
   # Majority label (first panel only)
   if (i == 1) {
     p <- p + annotate(
@@ -334,21 +336,21 @@ make_panel <- function(party, i, n_total) {
       hjust = 0, size  = 3, color = "grey50"
     )
   }
-  
+
   # Majority probability text
   if (!is.na(p_maj_str)) {
     p <- p + annotate(
       "text", 2, Inf, label = p_maj_str, hjust = 0, vjust = 3.7, size  = 3, color = "grey35", fontface = "italic"
     )
   }
-  
+
   # Majority shading
   if (stats$p_majority > 0.001) {
     p <- p + annotate(
       "rect", xmin = majority_threshold, xmax = 250, ymin = 0, ymax = Inf, fill = "grey50", alpha = 0.06
     )
   }
-  
+
   p
 }
 

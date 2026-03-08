@@ -33,7 +33,7 @@ prov_n <- build_effective_sample_sizes()
 election_results <- baseline$election_results
 
 old_env <- new.env(parent = globalenv())
-sys.source("../Functions.R", envir = old_env)
+sys.source("../scripts/Functions.R", envir = old_env)
 old_env$polling_results <- polling_results
 old_env$prov_n <- prov_n
 old_env$election_results <- election_results

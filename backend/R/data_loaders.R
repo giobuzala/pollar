@@ -1,3 +1,4 @@
+# data_loaders.R: baseline CSV loading, province vote shares, riding base table, national baseline.
 # Build per-province effective sample sizes from total_n and province weights (for Dirichlet).
 build_effective_sample_sizes <- function(
   total_n = DEFAULT_TOTAL_N,

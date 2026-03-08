@@ -1,5 +1,5 @@
 /**
- * Shared UI constants for the Pollar app.
+ * Shared UI constants for the pollar app.
  * Centralizes party colors and seat counts so components stay in sync.
  */
 

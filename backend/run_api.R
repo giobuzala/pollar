@@ -1,4 +1,4 @@
-# Start the Pollar Plumber API (run from backend/). Serves on 0.0.0.0:8000.
+# Start the pollar Plumber API (run from backend/). Serves on 0.0.0.0:8000.
 library(plumber)
 
 api <- plumb("plumber.R")

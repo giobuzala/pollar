@@ -120,9 +120,10 @@ function getRidingProvince(r: RidingWinProbability | Record<string, unknown>): s
 }
 
 export function ProjectionMap({ ridingData, embedded = false }: ProjectionMapProps) {
-  const data = useMemo(() => {
+  const data = useMemo((): RidingWinProbability[] => {
     if (Array.isArray(ridingData)) return ridingData;
-    if (ridingData && typeof ridingData === "object" && !Array.isArray(ridingData)) return Object.values(ridingData);
+    if (ridingData && typeof ridingData === "object" && !Array.isArray(ridingData))
+      return Object.values(ridingData) as RidingWinProbability[];
     return [];
   }, [ridingData]);
   const [geojson, setGeojson] = useState<FeatureCollection<Geometry> | null>(null);
@@ -143,7 +144,7 @@ export function ProjectionMap({ ridingData, embedded = false }: ProjectionMapPro
     originY: number;
     capturing: boolean;
   } | null>(null);
-  const sectionRef = useRef<HTMLElement | null>(null);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   useEffect(() => {
@@ -249,7 +250,13 @@ export function ProjectionMap({ ridingData, embedded = false }: ProjectionMapPro
         : "#d4e6f2";
       const path = pathGenerator(feature);
       if (!path) return [];
-      return [{ key: `${fedCode ?? "missing"}-${index}`, path, fill, riding: riding ?? null, feature }];
+      return [{ key: `${fedCode ?? "missing"}-${index}`, path, fill, riding: riding ?? null, feature }] as Array<{
+        key: string;
+        path: string;
+        fill: string;
+        riding: RidingWinProbability | null;
+        feature: Feature<Geometry>;
+      }>;
     });
   }, [geojson, pathGenerator, ridingByCode, data]);
 

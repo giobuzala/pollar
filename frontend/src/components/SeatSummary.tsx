@@ -20,7 +20,7 @@ export function SeatSummary({ forecast }: SeatSummaryProps) {
     );
   }
 
-  // Display medians that sum to totalSeats: round normally, then adjust the party closest to rounding the other way
+  /* Build rows in party order; then round medians and adjust so they sum to TOTAL_SEATS. */
   const rows = PARTIES.map((party) => {
     const row = forecast.seat_summary.find((entry) => entry.party === party);
     return row ? { party, row } : null;

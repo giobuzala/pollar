@@ -1,6 +1,6 @@
 # Federal Election Seat Forecast: Methodology Overview
 
-This script implements a probabilistic seat projection model for a federal election using province-level polling data and riding-level 2025 election results.
+The script `scripts/Federal Election Seat Forecast.R` (with helpers in `scripts/Functions.R`) implements a probabilistic seat projection model for a federal election using province-level polling data and riding-level 2025 election results.
 
 ## Model overview
 

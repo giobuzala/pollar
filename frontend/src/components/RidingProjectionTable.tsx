@@ -1,4 +1,8 @@
-import { useMemo, useRef, useState } from "react";
+/**
+ * Filterable, sortable table of riding-level projections: incumbent, projected winner,
+ * and per-party win probability. Uses multi-select filters for province, incumbent, and winner.
+ */
+import { useMemo, useState } from "react";
 import { PARTY_COLORS } from "../constants";
 import type { Party, RidingWinProbability } from "../types";
 import { PARTIES } from "../types";
@@ -67,7 +71,6 @@ function MultiSelectFilter<T extends string>({
   optionOrder?: T[];
 }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
   const list = optionOrder ? optionOrder.filter((o) => options.includes(o)) : options;
   const label = selected.length === 0 ? placeholder : selected.length === 1 ? selected[0] : `${selected.length} selected`;
 
@@ -76,7 +79,7 @@ function MultiSelectFilter<T extends string>({
   }
 
   return (
-    <div className="ridingMultiSelect" ref={ref}>
+    <div className="ridingMultiSelect">
       <button
         type="button"
         className="ridingTableFilter ridingMultiSelectTrigger"
@@ -110,23 +113,21 @@ function MultiSelectFilter<T extends string>({
   );
 }
 
-/**
- * Sortable, filterable table of all ridings: incumbent, projected winner,
- * and per-party win probability. Filters by province, riding name, incumbent, and winner.
- */
 export function RidingProjectionTable({ ridingData }: RidingProjectionTableProps) {
   const [filterProvinces, setFilterProvinces] = useState<string[]>([]);
   const [filterRiding, setFilterRiding] = useState("");
   const [filterWinners, setFilterWinners] = useState<string[]>([]);
   const [filterIncumbents, setFilterIncumbents] = useState<string[]>([]);
 
-  const incumbents = useMemo(() => {
+  const incumbents = useMemo((): string[] => {
     const set = new Set<string>();
     for (const r of ridingData) {
       const inc = (r as { incumbent?: Party; WINNER?: Party }).incumbent ?? (r as { WINNER?: Party }).WINNER;
       if (inc != null && String(inc).trim() !== "") set.add(String(inc));
     }
-    return PARTIES.filter((p) => set.has(p)).concat([...set].filter((p) => !PARTIES.includes(p)).sort());
+    const fromParties = PARTIES.filter((p) => set.has(p));
+    const other = [...set].filter((p) => !PARTIES.includes(p as Party)).sort();
+    return [...fromParties, ...other];
   }, [ridingData]);
 
   const sortedAndFiltered = useMemo(() => {

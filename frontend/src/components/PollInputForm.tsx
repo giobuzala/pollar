@@ -47,7 +47,7 @@ function ParamInfoButton() {
       <button
         type="button"
         className="paramInfoButton"
-        title=""
+        title="Simulations, swing method, and sample size help"
       >
         ?
       </button>

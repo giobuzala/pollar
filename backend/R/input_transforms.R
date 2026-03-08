@@ -1,3 +1,4 @@
+# input_transforms.R: payload coercion (national/provincial), sample sizes, response formatting.
 # Normalize a vote-share vector to sum to 1; optional floor at 0.
 normalize_share_vector <- function(x, zero_floor = TRUE) {
   x <- as.numeric(x)

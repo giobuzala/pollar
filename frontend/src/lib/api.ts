@@ -1,5 +1,5 @@
 /**
- * API client for the Pollar backend (Plumber on port 8000).
+ * API client for the pollar backend (Plumber on port 8000).
  * Fetches metadata and runs national or provincial seat forecasts.
  */
 import type { ForecastResponse, MetaResponse, Party } from "../types";

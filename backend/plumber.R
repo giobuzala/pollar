@@ -1,4 +1,4 @@
-# Plumber API for Pollar: metadata and national/provincial seat forecasts.
+# Plumber API for pollar: metadata and national/provincial seat forecasts.
 # Run from backend/: Rscript run_api.R (serves on port 8000).
 library(plumber)
 library(dplyr)
