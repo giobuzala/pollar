@@ -138,19 +138,19 @@ format_forecast_response <- function(result) {
       incumbent = .data$WINNER
     )
 
-  # Build array of objects with explicit names so JSON has Liberal, Conservative, etc. for chance columns
+  # Build array of objects with explicit names; unbox scalars so JSON has numbers not [n]
   riding_list <- lapply(seq_len(nrow(riding_out)), function(i) {
     r <- riding_out[i, , drop = FALSE]
     out_row <- list(
       PROVINCE = r$PROVINCE[[1L]],
-      FED_CODE = as.integer(r$FED_CODE[[1L]]),
+      FED_CODE = jsonlite::unbox(as.integer(r$FED_CODE[[1L]])),
       FED_NAME = r$FED_NAME[[1L]],
       incumbent = r$incumbent[[1L]],
       projected_winner = r$projected_winner[[1L]],
-      winner_probability = as.numeric(r$winner_probability[[1L]])
+      winner_probability = jsonlite::unbox(as.numeric(r$winner_probability[[1L]]))
     )
     for (party in PARTIES) {
-      out_row[[party]] <- as.numeric(r[[party]][[1L]])
+      out_row[[party]] <- jsonlite::unbox(as.numeric(r[[party]][[1L]]))
     }
     out_row
   })

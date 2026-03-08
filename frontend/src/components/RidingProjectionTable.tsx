@@ -32,10 +32,16 @@ type RidingProjectionTableProps = {
   ridingData: RidingWinProbability[];
 };
 
+/** Normalize API value to a number (handles scalar, string, or single-element array). */
+function toNumber(value: unknown): number {
+  if (typeof value === "number" && !Number.isNaN(value)) return value;
+  if (typeof value === "string" && value.trim() !== "") return Number(value);
+  if (Array.isArray(value) && value.length > 0) return toNumber(value[0]);
+  return NaN;
+}
+
 function pct(value: unknown): string {
-  let n = NaN;
-  if (typeof value === "number" && !Number.isNaN(value)) n = value;
-  else if (typeof value === "string" && value.trim() !== "") n = Number(value);
+  const n = toNumber(value);
   return Number.isNaN(n) ? "—" : `${Math.round(n * 100)}%`;
 }
 
