@@ -25,6 +25,32 @@ export function SeatSummary({ forecast }: SeatSummaryProps) {
 
   const totalSeats = 343;
 
+  // Display medians that sum to totalSeats: round normally, then adjust the party closest to rounding the other way
+  const rows = PARTIES.map((party) => {
+    const row = forecast.seat_summary.find((entry) => entry.party === party);
+    return row ? { party, row } : null;
+  }).filter(Boolean) as { party: Party; row: { party: Party; mean: number; median: number; p05: number; p95: number } }[];
+
+  const rounded = rows.map(({ row }) => Math.round(row.median));
+  const sum = rounded.reduce((a, b) => a + b, 0);
+  let displayMedians = rounded.slice();
+  if (sum !== totalSeats && rows.length > 0) {
+    if (sum < totalSeats) {
+      const need = totalSeats - sum;
+      const byFrac = rows
+        .map(({ row }, i) => ({ i, frac: row.median - Math.floor(row.median) }))
+        .sort((a, b) => b.frac - a.frac);
+      for (let k = 0; k < need; k++) displayMedians[byFrac[k % byFrac.length].i]++;
+    } else {
+      const need = sum - totalSeats;
+      const byFrac = rows
+        .map(({ row }, i) => ({ i, frac: Math.ceil(row.median) - row.median }))
+        .sort((a, b) => b.frac - a.frac);
+      for (let k = 0; k < need; k++) displayMedians[byFrac[k % byFrac.length].i]--;
+    }
+  }
+  const medianByParty = Object.fromEntries(PARTIES.map((p, i) => [p, displayMedians[i] ?? Math.round(rows[i]?.row.median ?? 0)]));
+
   return (
     <section className="panel">
       <h2>Seat Projection</h2>
@@ -40,22 +66,35 @@ export function SeatSummary({ forecast }: SeatSummaryProps) {
           const pluralityChance = Math.round((forecast.probabilities.plurality[party] ?? 0) * 100);
           const isFirst = index === 0;
           const majorityPosition = `${(forecast.majority_threshold / totalSeats) * 100}%`;
+          const displayMedian = medianByParty[party] ?? Math.round(row.median);
 
           return (
             <div key={party} className="seatRow">
               <div className="seatRowHeader">
                 <strong>{party}</strong>
                 <span>
-                  Median: {Math.round(row.median)} | Range: {row.p05.toFixed(0)}-{row.p95.toFixed(0)}
+                  Median: {displayMedian} | Range: {row.p05.toFixed(0)}-{row.p95.toFixed(0)}
                 </span>
               </div>
               <div className="barTrack">
                 <div className="barFill" style={{ width, background: PARTY_COLORS[party] }} />
-                <div className="majorityLine" style={{ left: majorityPosition }} aria-hidden />
+                <div
+                  className={`majorityLine ${row.median >= forecast.majority_threshold ? "majorityLineOverBar" : ""}`}
+                  style={{ left: majorityPosition }}
+                  aria-hidden
+                />
               </div>
               <div className="probabilities">
-                <span>{isFirst ? `Probability of majority: ${majorityChance}%` : `${majorityChance}%`}</span>
-                <span>{isFirst ? `Probability of plurality: ${pluralityChance}%` : `${pluralityChance}%`}</span>
+                <span
+                  title={`Proportion of simulations in which this party won at least half the seats (≥${forecast.majority_threshold} seats)`}
+                >
+                  {isFirst ? `Probability of majority: ${majorityChance}%` : `${majorityChance}%`}
+                </span>
+                <span
+                  title="Proportion of simulations in which this party won more seats than any other party"
+                >
+                  {isFirst ? `Probability of plurality: ${pluralityChance}%` : `${pluralityChance}%`}
+                </span>
               </div>
             </div>
           );

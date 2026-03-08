@@ -36,6 +36,8 @@ export type RidingWinProbability = {
   Other: number;
   projected_winner: Party;
   winner_probability: number;
+  /** Current holder (2025 election winner). */
+  incumbent?: Party;
 };
 
 export type ForecastResponse = {
@@ -43,7 +45,8 @@ export type ForecastResponse = {
   probabilities: Probabilities;
   majority_threshold: number;
   riding_win_probabilities: RidingWinProbability[];
-  derived_provincial_polling?: Array<Record<string, number | string>>;
+  /** Simulation-based median popular vote share by party (National + provinces) */
+  projected_vote_shares?: Array<Record<string, number | string>>;
 };
 
 export type MetaResponse = {
@@ -52,4 +55,6 @@ export type MetaResponse = {
   majority_threshold: number;
   /** 2025 actual provincial vote shares; used as default when present */
   default_provincial_polls?: Record<string, Record<Party, number>>;
+  /** 2025 election seat count by party; for Current Seat Distribution chart */
+  baseline_seats?: Record<Party, number>;
 };

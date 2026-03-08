@@ -51,7 +51,22 @@ def main() -> None:
         for shape_record in reader.iterShapeRecords():
             record = dict(zip(fields, shape_record.record))
             geometry = shape_record.shape.__geo_interface__
-            rings = [transform_ring(ring, transformer) for ring in geometry["coordinates"]]
+            gtype = geometry["type"]
+            coords = geometry["coordinates"]
+
+            if gtype == "Polygon":
+                # coordinates: [exterior_ring, hole1, hole2, ...]
+                transformed = [transform_ring(ring, transformer) for ring in coords]
+                geom_out = {"type": "Polygon", "coordinates": transformed}
+            elif gtype == "MultiPolygon":
+                # coordinates: [[[exterior], [hole], ...], [[exterior], ...], ...]
+                transformed = [
+                    [transform_ring(ring, transformer) for ring in polygon]
+                    for polygon in coords
+                ]
+                geom_out = {"type": "MultiPolygon", "coordinates": transformed}
+            else:
+                continue
 
             features.append(
                 {
@@ -60,10 +75,7 @@ def main() -> None:
                         "FED_NUM": int(record["FED_NUM"]),
                         "FED_NAME": record["ED_NAMEE"],
                     },
-                    "geometry": {
-                        "type": "Polygon",
-                        "coordinates": rings,
-                    },
+                    "geometry": geom_out,
                 }
             )
 

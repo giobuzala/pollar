@@ -134,18 +134,47 @@ format_forecast_response <- function(result) {
   riding_out <- result$riding_win_probs |>
     dplyr::mutate(
       projected_winner = PARTIES[projected_idx],
-      winner_probability = apply(ride_mat, 1, max)
+      winner_probability = apply(ride_mat, 1, max),
+      incumbent = .data$WINNER
     )
 
-  list(
+  # Build array of objects with explicit names so JSON has Liberal, Conservative, etc. for chance columns
+  riding_list <- lapply(seq_len(nrow(riding_out)), function(i) {
+    r <- riding_out[i, , drop = FALSE]
+    out_row <- list(
+      PROVINCE = r$PROVINCE[[1L]],
+      FED_CODE = as.integer(r$FED_CODE[[1L]]),
+      FED_NAME = r$FED_NAME[[1L]],
+      incumbent = r$incumbent[[1L]],
+      projected_winner = r$projected_winner[[1L]],
+      winner_probability = as.numeric(r$winner_probability[[1L]])
+    )
+    for (party in PARTIES) {
+      out_row[[party]] <- as.numeric(r[[party]][[1L]])
+    }
+    out_row
+  })
+
+  out <- list(
     seat_summary = jsonlite::fromJSON(jsonlite::toJSON(seat_summary, dataframe = "rows", auto_unbox = TRUE)),
     probabilities = list(
       majority = majority,
       plurality = plurality
     ),
     majority_threshold = jsonlite::unbox(as.integer(result$majority_threshold)),
-    riding_win_probabilities = jsonlite::fromJSON(
-      jsonlite::toJSON(riding_out, dataframe = "rows", auto_unbox = TRUE, digits = 6)
-    )
+    riding_win_probabilities = riding_list
   )
+
+  if (!is.null(result$projected_national_vote) && !is.null(result$projected_provincial_vote)) {
+    prov_names <- result$province_names
+    proj_df <- data.frame(party = PARTIES, National = as.numeric(result$projected_national_vote[PARTIES]), stringsAsFactors = FALSE)
+    for (p in prov_names) {
+      proj_df[[p]] <- as.numeric(vapply(PARTIES, function(party) result$projected_provincial_vote[[p]][party], numeric(1)))
+    }
+    out$projected_vote_shares <- jsonlite::fromJSON(
+      jsonlite::toJSON(proj_df, dataframe = "rows", auto_unbox = TRUE, digits = 4)
+    )
+  }
+
+  out
 }

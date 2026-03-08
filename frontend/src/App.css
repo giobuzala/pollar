@@ -42,14 +42,14 @@
   font-size: 1.05rem;
 }
 
-.contentGrid {
+.resultsGrid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 1.25rem;
+  margin-top: 1.25rem;
 }
 
-/* Polling inputs column sizes to content; seat projection takes the rest and must not overflow */
-.contentGrid > .panel:last-child {
+.resultsGrid > .panel {
   min-width: 0;
   overflow: hidden;
 }
@@ -82,6 +82,53 @@
   color: var(--polar-text-muted);
 }
 
+.methodologySection {
+  margin-top: 1.25rem;
+}
+
+.methodologyToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--polar-text);
+  font: inherit;
+  font-family: "Outfit", system-ui, sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+
+.methodologyToggle:hover {
+  color: var(--polar-accent);
+}
+
+.methodologyToggleIcon {
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--polar-text-muted);
+}
+
+.methodologyContent {
+  padding-top: 0.75rem;
+}
+
+.methodologyContent p {
+  margin: 0 0 0.75rem;
+  color: var(--polar-text);
+  line-height: 1.5;
+}
+
+.methodologyContent p:last-child {
+  margin-bottom: 0;
+}
+
 .modeToggle {
   display: flex;
   gap: 0.5rem;
@@ -110,6 +157,177 @@
   border-color: var(--polar-accent);
 }
 
+.ridingMapEmbedded {
+  margin-top: 0;
+}
+
+.ridingMapEmbeddedMessage {
+  padding: 1rem 0;
+  color: var(--polar-text-muted);
+}
+
+.ridingMapEmbeddedMessage .ridingMapEmbeddedHint {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.ridingMapEmbeddedMessage code {
+  font-size: 0.85em;
+}
+
+.ridingTableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--polar-border-soft);
+  border-radius: 10px;
+  margin-top: 0.25rem;
+}
+
+.ridingTable {
+  width: 100%;
+  min-width: 800px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.ridingTable th,
+.ridingTable td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--polar-border-soft);
+}
+
+.ridingTable th {
+  font-weight: 600;
+  color: var(--polar-text);
+  background: var(--polar-bg);
+}
+
+.ridingTable th.ridingTablePartyHeader {
+  text-align: center;
+  font-weight: 600;
+  color: var(--polar-text-muted);
+  font-size: 0.85rem;
+}
+
+.ridingTable th.ridingTableNum,
+.ridingTable td.ridingTableNum {
+  text-align: right;
+  min-width: 2.5rem;
+}
+
+.ridingTable td.ridingTablePartyCell {
+  color: var(--polar-text-muted);
+  font-size: 0.85rem;
+}
+
+.ridingTableFilterCell {
+  padding: 0.35rem 0.5rem;
+  vertical-align: middle;
+  font-weight: normal;
+  background: var(--polar-bg);
+  border-bottom: 1px solid var(--polar-border-soft);
+}
+
+.ridingTableFilterCell .ridingTableFilter {
+  width: 100%;
+  min-width: 0;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--polar-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: var(--polar-surface);
+  color: var(--polar-text);
+  box-sizing: border-box;
+}
+
+.ridingTableFilterCell .ridingTableFilter:focus {
+  outline: none;
+  border-color: var(--polar-accent);
+  box-shadow: 0 0 0 2px var(--polar-focus);
+}
+
+.ridingMultiSelect {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.ridingMultiSelectTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  width: 100%;
+  min-width: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+}
+
+.ridingMultiSelectChevron {
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  color: var(--polar-text-muted);
+}
+
+.ridingMultiSelectBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+}
+
+.ridingMultiSelectDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.2rem;
+  min-width: 100%;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 0.35rem;
+  background: var(--polar-surface);
+  border: 1px solid var(--polar-border);
+  border-radius: 8px;
+  box-shadow: 0 6px 20px var(--polar-shadow-strong);
+  z-index: 11;
+}
+
+.ridingMultiSelectOption {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--polar-text);
+}
+
+.ridingMultiSelectOption:hover {
+  background: var(--polar-bg-strong);
+}
+
+.ridingMultiSelectCheckbox {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--polar-accent);
+  cursor: pointer;
+}
+
+.ridingTable tbody tr:hover {
+  background: var(--polar-bg-strong);
+}
+
+.ridingTableWinner {
+  display: inline-block;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #fff;
+}
+
 .pollingSection {
   margin-top: 0.5rem;
   padding: 1.25rem;
@@ -129,7 +347,7 @@
 
 .nationalPollRow {
   display: grid;
-  grid-template-columns: repeat(7, minmax(4.5rem, 5.5rem));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 1rem;
   align-items: end;
   width: 100%;
@@ -138,7 +356,9 @@
 }
 
 .nationalPollRow .field input {
-  max-width: 4.5rem;
+  width: 100%;
+  max-width: 8.5rem;
+  box-sizing: border-box;
 }
 
 .field.totalCol {
@@ -146,7 +366,7 @@
 }
 
 .nationalPollRow .field.totalCol input.totalValueInput {
-  max-width: 4.5rem;
+  max-width: 8.5rem;
   font-weight: 600;
   background: var(--polar-bg-strong);
   cursor: default;
@@ -268,9 +488,10 @@
 
 .paramInfoTooltip {
   position: absolute;
-  left: 100%;
-  top: 0;
-  margin-left: 0.5rem;
+  right: 0;
+  left: auto;
+  bottom: 100%;
+  margin-bottom: -1rem;
   width: 280px;
   padding: 0.75rem 0.9rem;
   background: var(--polar-hero-start);
@@ -349,13 +570,18 @@
   background: var(--polar-bg);
 }
 
+.provinceTable th.colNational,
+.provinceTable td.colNational {
+  font-weight: 600;
+}
+
 .provinceTable input {
-  width: 3.2rem;
+  width: 5.25rem;
   max-width: 100%;
-  min-height: 1.75rem;
+  min-height: 1.8rem;
   border: 1px solid var(--polar-border);
   border-radius: 6px;
-  padding: 0.4rem 0.25rem;
+  padding: 0.4rem 0.35rem;
   font-size: 0.78rem;
   background: var(--polar-surface);
   box-sizing: border-box;
@@ -378,7 +604,7 @@
 .provinceTable input[type="number"]::-webkit-inner-spin-button,
 .provinceTable input[type="number"]::-webkit-outer-spin-button {
   opacity: 0;
-  transform: scale(0.7);
+  transform: scale(0.8);
   transform-origin: right center;
   transition: opacity 0.15s;
 }
@@ -400,6 +626,10 @@
   display: grid;
   gap: 0.75rem;
   margin-top: 0.75rem;
+}
+
+.currentSeatDistribution .seatBars {
+  gap: 2.18rem;
 }
 
 .seatRowHeader {
@@ -430,6 +660,10 @@
   border-radius: 1px;
 }
 
+.majorityLine.majorityLineOverBar {
+  background: #fff;
+}
+
 .barFill {
   height: 100%;
   border-radius: 6px;
@@ -443,57 +677,311 @@
   font-size: 0.82rem;
 }
 
-.mapControls {
+.mapRidingSearchWrap {
+  position: relative;
+  margin-top: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+
+.mapRidingSearchWrap .mapRidingSearchRow {
   display: flex;
-  gap: 0.55rem;
-  margin-top: 0.75rem;
-}
-
-.mapControls button {
+  align-items: center;
+  gap: 0;
+  min-height: 2.5rem;
+  padding: 0 0.85rem;
   border: 1px solid var(--polar-border);
-  background: var(--polar-bg);
-  color: var(--polar-text);
-  border-radius: 999px;
-  padding: 0.45rem 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  border-radius: 10px;
+  background: var(--polar-surface);
+  box-shadow: 0 1px 4px var(--polar-shadow);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.mapControls button:hover {
-  background: var(--polar-bg-strong);
+.mapRidingSearchWrap .mapRidingSearchRow:focus-within {
   border-color: var(--polar-accent);
-  color: var(--polar-accent);
+  box-shadow: 0 0 0 2px var(--polar-accent-subtle);
+}
+
+.mapRidingSearchIcon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--polar-text-muted);
+  pointer-events: none;
+}
+
+.mapRidingSearchInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0.6rem 0 0.6rem 0.65rem;
+  font-size: 0.95rem;
+  border: none;
+  background: transparent;
+  color: var(--polar-text);
+  line-height: 1.4;
+}
+
+.mapRidingSearchInput::placeholder {
+  color: var(--polar-text-muted);
+  font-style: italic;
+}
+
+.mapRidingSearchWrap .mapRidingSearchRow:hover {
+  border-color: var(--polar-border-soft);
+}
+
+.mapRidingSearchInput:focus {
+  outline: none;
+}
+
+.mapRidingSearchResults {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 0.25rem 0 0;
+  padding: 0.35rem 0;
+  list-style: none;
+  background: var(--polar-surface);
+  border: 1px solid var(--polar-border-soft);
+  border-radius: 10px;
+  box-shadow: 0 6px 20px var(--polar-shadow-strong);
+  z-index: 30;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.mapRidingSearchResultItem {
+  padding: 0.5rem 0.85rem 0.5rem 2.5rem;
+  cursor: pointer;
+  display: grid;
+  gap: 0.15rem;
+  transition: background 0.1s;
+}
+
+.mapRidingSearchResultItem:hover {
+  background: var(--polar-bg-strong);
+}
+
+.mapRidingSearchResultItem strong {
+  font-size: 0.9rem;
+}
+
+.mapRidingSearchResultItem span {
+  font-size: 0.8rem;
+  color: var(--polar-text-muted);
+}
+
+.mapRidingSearchNoResults {
+  cursor: default;
+  color: var(--polar-text-muted);
+  font-style: italic;
+}
+
+.mapRidingSearchNoResults:hover {
+  background: transparent;
 }
 
 .mapWrap {
+  position: relative;
   margin-top: 0.8rem;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--polar-border-soft);
+  min-height: 400px;
+}
+
+.mapWrapLeaflet {
+  height: 600px;
+  min-height: 400px;
+}
+
+.mapLeafletNoTiles {
+  background: var(--polar-bg);
+}
+
+.mapLeafletNoTiles .leaflet-tile-pane {
+  display: none;
+}
+
+.mapRidingTooltip {
+  background: var(--polar-surface) !important;
+  color: var(--polar-text) !important;
+  border: 1px solid var(--polar-border-soft) !important;
+  border-radius: 10px !important;
+  padding: 0.5rem 0.65rem !important;
+  font-size: 0.9rem !important;
+  box-shadow: 0 4px 16px var(--polar-shadow-strong) !important;
+}
+
+.mapRidingTooltip::before {
+  border-top-color: var(--polar-surface) !important;
 }
 
 .mapSvg {
   width: 100%;
   height: auto;
+  display: block;
   background: var(--polar-bg);
   cursor: grab;
   touch-action: none;
 }
 
-.hoverCard {
-  margin-top: 0.7rem;
-  display: grid;
-  gap: 0.2rem;
-  padding: 0.65rem 0.8rem;
-  border-radius: 10px;
-  background: var(--polar-bg);
-  color: var(--polar-text);
-  border: 1px solid var(--polar-border-soft);
+.mapSvg:active {
+  cursor: grabbing;
 }
 
-.hoverCard.placeholder {
+.mapControlsOverlay {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  z-index: 1000;
+  pointer-events: auto;
+}
+
+.mapControlsOverlay button {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--polar-border);
+  background: var(--polar-surface);
+  color: var(--polar-text);
+  border-radius: 8px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  line-height: 1;
+  box-shadow: 0 2px 8px var(--polar-shadow);
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.mapControlsOverlay button:hover {
+  background: var(--polar-bg-strong);
+  border-color: var(--polar-accent);
+  color: var(--polar-accent);
+}
+
+.mapControlReset svg {
+  display: block;
+}
+
+.mapTooltip {
+  position: fixed;
+  z-index: 20;
+  padding: 0;
+  border-radius: 12px;
+  background: var(--polar-surface);
+  color: var(--polar-text);
+  border: 1px solid var(--polar-border-soft);
+  box-shadow: 0 10px 40px var(--polar-shadow-strong), 0 0 0 1px rgba(0, 0, 0, 0.03);
+  pointer-events: auto;
+  max-width: 320px;
+  min-width: 240px;
+  overflow: hidden;
+}
+
+.mapTooltipHeader {
+  padding: 0.85rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--polar-border-soft);
+}
+
+.mapTooltipRiding {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--polar-text);
+}
+
+.mapTooltipProvince {
+  display: block;
+  font-size: 0.82rem;
   color: var(--polar-text-muted);
+  margin-top: 0.15rem;
+}
+
+.mapTooltipWinner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: var(--polar-bg);
+  border-bottom: 1px solid var(--polar-border-soft);
+}
+
+.mapTooltipWinnerLabel {
+  font-size: 0.8rem;
+  color: var(--polar-text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.mapTooltipWinnerParty {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--polar-text);
+}
+
+.mapTooltipTableWrap {
+  padding: 0.6rem 1rem 0.85rem;
+}
+
+.mapTooltipTableCaption {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--polar-text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.4rem;
+}
+
+.mapTooltipTable {
+  width: 100%;
+  font-size: 0.85rem;
+  border-collapse: collapse;
+}
+
+.mapTooltipTable th {
+  text-align: left;
+  padding: 0.25rem 0.5rem 0.25rem 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--polar-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.mapTooltipTable th:last-child {
+  text-align: right;
+}
+
+.mapTooltipTable td {
+  padding: 0.3rem 0.5rem 0.3rem 0;
+  color: var(--polar-text);
+  border-top: 1px solid var(--polar-border-soft);
+}
+
+.mapTooltipTable td:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--polar-text-muted);
+}
+
+.mapTooltipTable tbody tr.mapTooltipTableRowWinner td {
+  font-weight: 600;
+  color: var(--polar-text);
+}
+
+.mapTooltipTable tbody tr.mapTooltipTableRowWinner td:last-child {
+  color: var(--polar-accent);
 }
 
 .errorBox {
@@ -505,14 +993,34 @@
 }
 
 .footerNote {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   color: var(--polar-text-muted);
-  font-size: 0.84rem;
-  padding-bottom: 0.4rem;
+  font-size: 0.92rem;
+  padding: 0.75rem 0 0.4rem;
+  border-top: 1px solid var(--polar-border-soft);
+  margin-top: 0.4rem;
+}
+
+.footerNote a {
+  color: var(--polar-text);
+  text-decoration: none;
+}
+
+.footerNote a:hover {
+  text-decoration: underline;
+}
+
+.footerNote .footerSep {
+  color: var(--polar-text-muted);
+  margin: 0 0.15rem;
 }
 
 @media (max-width: 1100px) {
-  .contentGrid {
+  .resultsGrid {
     grid-template-columns: 1fr;
   }
 }

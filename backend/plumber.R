@@ -10,7 +10,13 @@ source("R/data_loaders.R")
 source("R/model_core.R")
 source("R/input_transforms.R")
 
-BASELINE <- load_baseline_data("../Data/Canada 2025 Federal Election Results by Electoral District.csv")
+# Canada 2025 Federal Election Results by Electoral District.csv (run from backend/ or project root)
+BASELINE_CSV <- if (file.exists("../Data/Canada 2025 Federal Election Results by Electoral District.csv")) {
+  "../Data/Canada 2025 Federal Election Results by Electoral District.csv"
+} else {
+  "Data/Canada 2025 Federal Election Results by Electoral District.csv"
+}
+BASELINE <- load_baseline_data(BASELINE_CSV)
 
 #* @filter cors
 function(req, res) {
@@ -42,11 +48,15 @@ function() {
     vec[is.na(vec)] <- 0
     default_provincial_polls[[prov]] <- as.list(vec)
   }
+  # 2025 election seat count by party (for Current Seat Distribution chart)
+  winner_counts <- table(factor(BASELINE$riding_base$WINNER, levels = PARTIES))
+  baseline_seats <- as.list(setNames(as.integer(winner_counts), PARTIES))
   list(
     parties = PARTIES,
     provinces = BASELINE$province_names,
     majority_threshold = jsonlite::unbox(floor(nrow(BASELINE$riding_base) / 2) + 1L),
-    default_provincial_polls = default_provincial_polls
+    default_provincial_polls = default_provincial_polls,
+    baseline_seats = baseline_seats
   )
 }
 

@@ -26,6 +26,12 @@ function toPercent(value: number): string {
   return (value * 100).toFixed(1);
 }
 
+/** Format for input display: whole numbers without decimal (e.g. "13") so typing double digits works. */
+function formatPercentForInput(value: number): string {
+  const n = Math.round(value * 1000) / 10;
+  return n % 1 === 0 ? String(Math.round(n)) : n.toFixed(1);
+}
+
 function sumPartyVector(v: Record<Party, number>): number {
   return PARTIES.reduce((s, p) => s + (v[p] ?? 0), 0);
 }
@@ -112,7 +118,7 @@ export function PollInputForm(props: PollInputFormProps) {
                     min={0}
                     max={100}
                     step={0.1}
-                    value={toPercent(props.nationalPoll[party])}
+                    value={formatPercentForInput(props.nationalPoll[party])}
                     onChange={(event) => props.onNationalChange(party, Number(event.target.value) / 100)}
                   />
                 </label>
@@ -165,7 +171,7 @@ export function PollInputForm(props: PollInputFormProps) {
                             value={
                               isBlocOutsideQuebec
                                 ? ""
-                                : toPercent(props.provincialPolls[province]?.[party] ?? 0)
+                                : formatPercentForInput(props.provincialPolls[province]?.[party] ?? 0)
                             }
                             onChange={(event) =>
                               props.onProvincialChange(province, party, Number(event.target.value) / 100)

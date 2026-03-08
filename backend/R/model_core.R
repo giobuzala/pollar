@@ -162,7 +162,15 @@ simulate_province_winners <- function(context, polling_results, prov_n, swing_me
   adjusted_votes <- adjusted_votes / row_totals
   vote_matrix[, context$active_cols] <- adjusted_votes
 
-  max.col(vote_matrix, ties.method = "first")
+  prov_share <- colMeans(vote_matrix, na.rm = TRUE)
+  prov_share[is.na(prov_share)] <- 0
+  if (sum(prov_share) > 0) prov_share <- prov_share / sum(prov_share)
+  names(prov_share) <- PARTIES
+
+  list(
+    winners = max.col(vote_matrix, ties.method = "first"),
+    vote_shares = prov_share
+  )
 }
 
 determine_winners <- function(riding_df) {
@@ -197,22 +205,42 @@ run_seat_forecast_mc <- function(
   riding_win_counts <- matrix(0L, nrow = total_seats, ncol = length(PARTIES))
   colnames(riding_win_counts) <- PARTIES
 
+  province_names <- names(province_contexts)
+  national_vote_sims <- matrix(0, nrow = n_sims, ncol = length(PARTIES))
+  colnames(national_vote_sims) <- PARTIES
+  provincial_vote_sims <- setNames(
+    lapply(province_names, function(.) matrix(0, nrow = n_sims, ncol = length(PARTIES))),
+    province_names
+  )
+  for (pn in province_names) colnames(provincial_vote_sims[[pn]]) <- PARTIES
+
   for (i in seq_len(n_sims)) {
     seat_counts_i <- integer(length(PARTIES))
+    national_weighted <- setNames(numeric(length(PARTIES)), PARTIES)
 
-    for (context in province_contexts) {
-      winner_party_idx <- simulate_province_winners(
+    for (prov in province_names) {
+      context <- province_contexts[[prov]]
+      out <- simulate_province_winners(
         context = context,
         polling_results = polling_results,
         prov_n = prov_n,
         swing_method = swing_method
       )
+      winner_party_idx <- out$winners
+      vote_shares <- out$vote_shares[PARTIES]
+      vote_shares[is.na(vote_shares)] <- 0
+
       seat_counts_i <- seat_counts_i + tabulate(winner_party_idx, nbins = length(PARTIES))
       riding_win_counts[cbind(context$row_idx, winner_party_idx)] <-
         riding_win_counts[cbind(context$row_idx, winner_party_idx)] + 1L
+
+      n_ridings <- length(context$row_idx)
+      national_weighted <- national_weighted + vote_shares * n_ridings
+      provincial_vote_sims[[prov]][i, ] <- vote_shares
     }
 
     seat_counts[i, ] <- seat_counts_i
+    national_vote_sims[i, ] <- national_weighted / total_seats
   }
 
   seat_df <- tibble::as_tibble(seat_counts)
@@ -241,9 +269,12 @@ run_seat_forecast_mc <- function(
   )
 
   riding_win_probs <- dplyr::bind_cols(
-    ordered_base[, c("PROVINCE", "FED_CODE", "FED_NAME"), drop = FALSE],
+    ordered_base[, c("PROVINCE", "FED_CODE", "FED_NAME", "WINNER"), drop = FALSE],
     tibble::as_tibble(riding_win_counts / n_sims)
   )
+
+  projected_national_vote <- apply(national_vote_sims, 2, median)
+  projected_provincial_vote <- lapply(provincial_vote_sims, function(m) apply(m, 2, median))
 
   list(
     seat_simulations = seat_df,
@@ -251,6 +282,9 @@ run_seat_forecast_mc <- function(
     prob_majority = prob_majority,
     prob_plurality = prob_plurality,
     majority_threshold = majority_threshold,
-    riding_win_probs = riding_win_probs
+    riding_win_probs = riding_win_probs,
+    projected_national_vote = projected_national_vote,
+    projected_provincial_vote = projected_provincial_vote,
+    province_names = province_names
   )
 }

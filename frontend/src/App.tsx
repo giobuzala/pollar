@@ -1,10 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
+import { CurrentSeatDistribution } from "./components/CurrentSeatDistribution";
 import { PollInputForm } from "./components/PollInputForm";
 import { ProjectionMap } from "./components/ProjectionMap";
+import { RidingProjectionTable } from "./components/RidingProjectionTable";
 import { SeatSummary } from "./components/SeatSummary";
 import { fetchMeta, runNationalForecast, runProvincialForecast } from "./lib/api";
 import type { ForecastResponse, MetaResponse, Mode, Party } from "./types";
 import "./App.css";
+
+/** 2025 federal election seat counts (fallback when API does not return baseline_seats). Total 343. */
+const FALLBACK_BASELINE_SEATS: Record<Party, number> = {
+  Liberal: 169,
+  Conservative: 144,
+  Bloc: 22,
+  NDP: 7,
+  Green: 1,
+  Other: 0,
+};
 
 /** Default: 2025 federal election actual results (Elected/Share). Other = PPC + Independent + Christian Heritage + rounding. */
 function buildDefaultPartyVector(): Record<Party, number> {
@@ -55,6 +67,8 @@ function App() {
   const [forecast, setForecast] = useState<ForecastResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [methodologyOpen, setMethodologyOpen] = useState(false);
+  const [ridingView, setRidingView] = useState<"map" | "table">("map");
 
   useEffect(() => {
     async function loadMeta() {
@@ -71,9 +85,9 @@ function App() {
 
   const provinces = meta?.provinces ?? [];
 
-  const derivedProvTable = useMemo(() => {
-    if (!forecast?.derived_provincial_polling) return null;
-    return forecast.derived_provincial_polling;
+  const voteShareTable = useMemo(() => {
+    if (!forecast?.projected_vote_shares) return null;
+    return forecast.projected_vote_shares;
   }, [forecast]);
 
   async function handleRunForecast() {
@@ -125,8 +139,7 @@ function App() {
         </p>
       </header>
 
-      <div className="contentGrid">
-        <PollInputForm
+      <PollInputForm
           mode={mode}
           onModeChange={setMode}
           provinces={provinces}
@@ -152,31 +165,42 @@ function App() {
           isLoading={isLoading}
         />
 
-        <SeatSummary forecast={forecast} />
-      </div>
+      {meta ? (
+        <div className="resultsGrid">
+          <CurrentSeatDistribution
+            baselineSeats={meta.baseline_seats ?? FALLBACK_BASELINE_SEATS}
+            majorityThreshold={meta.majority_threshold}
+          />
+          <SeatSummary forecast={forecast} />
+        </div>
+      ) : null}
 
       {error ? <div className="errorBox">{error}</div> : null}
 
-      {derivedProvTable ? (
+      {voteShareTable ? (
         <section className="panel">
-          <h2>Derived Provincial Polling</h2>
+          <h2>Projected Popular Vote</h2>
           <p className="subtle">
-            National-only inputs are converted into provincial estimates before simulation.
+            Median popular vote share by party from the simulation.
           </p>
           <div className="provinceTableWrap">
             <table className="provinceTable">
               <thead>
                 <tr>
                   <th>Party</th>
+                  <th className="colNational">National</th>
                   {provinces.map((province) => (
                     <th key={province}>{province}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {derivedProvTable.map((row) => (
+                {voteShareTable.map((row) => (
                   <tr key={String(row.party)}>
                     <td>{String(row.party)}</td>
+                    <td className="colNational">
+                      {typeof row.National === "number" ? `${((row.National as number) * 100).toFixed(1)}%` : "-"}
+                    </td>
                     {provinces.map((province) => (
                       <td key={`${row.party}-${province}`}>
                         {typeof row[province] === "number" ? `${((row[province] as number) * 100).toFixed(1)}%` : "-"}
@@ -190,8 +214,85 @@ function App() {
         </section>
       ) : null}
 
-      {forecast ? <ProjectionMap ridingData={forecast.riding_win_probabilities} /> : null}
-      <footer className="footerNote">Pollar — Canadian federal election projection powered by Monte Carlo simulation.</footer>
+      {forecast ? (
+        <section className="panel">
+          <h2>Riding Projection</h2>
+          <div className="modeToggle" role="tablist" aria-label="Riding view">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={ridingView === "map"}
+              className={ridingView === "map" ? "active" : ""}
+              onClick={() => setRidingView("map")}
+            >
+              Map
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={ridingView === "table"}
+              className={ridingView === "table" ? "active" : ""}
+              onClick={() => setRidingView("table")}
+            >
+              Table
+            </button>
+          </div>
+          {ridingView === "map" ? (
+            <div key="map" role="tabpanel">
+              <ProjectionMap ridingData={forecast.riding_win_probabilities} embedded />
+            </div>
+          ) : (
+            <div key="table" role="tabpanel">
+              <RidingProjectionTable ridingData={forecast.riding_win_probabilities} />
+            </div>
+          )}
+        </section>
+      ) : null}
+
+      <section id="methodology" className="panel methodologySection">
+        <button
+          type="button"
+          className="methodologyToggle"
+          onClick={() => setMethodologyOpen((o) => !o)}
+          aria-expanded={methodologyOpen}
+        >
+          <span className="methodologyToggleTitle">Methodology</span>
+          <span className="methodologyToggleIcon" aria-hidden>{methodologyOpen ? "▼" : "▶"}</span>
+        </button>
+        {methodologyOpen ? (
+          <div className="methodologyContent">
+          <p>
+            Pollar projects federal seat outcomes from polling data using a <strong>Monte Carlo simulation</strong> with riding-level swing. The baseline is the <strong>2025 federal election</strong>: actual vote shares by electoral district and by province.
+          </p>
+          <p>
+            <strong>Input.</strong> You can enter either a single <strong>national poll</strong> (vote shares by party) or <strong>provincial polls</strong> for each province. In national mode, the app converts the national poll into province-level estimates by applying the national swing (poll minus 2025 national result) to each province’s 2025 result, then normalizing. The Bloc Québécois is included only in Quebec; outside Quebec it is set to zero and other shares are rescaled.
+          </p>
+          <p>
+            <strong>Poll uncertainty.</strong> The model treats the input poll(s) as uncertain. For each province, it draws simulated vote shares from a <strong>Dirichlet distribution</strong> whose mean is your entered shares and whose concentration comes from an effective sample size (default total <em>n</em> = 2,000, allocated by province population weight, with a design effect of 1.25). So each simulation uses a slightly different “poll” consistent with sampling error.
+          </p>
+          <p>
+            <strong>Swing and elasticity.</strong> In each simulation, for each province, the difference between the simulated provincial poll and the 2025 provincial result is computed as a “swing.” You can choose <strong>Absolute</strong> swing (raw difference in vote share) or <strong>Proportional</strong> (logit-space difference). That swing is applied to every riding in the province using a riding-level <strong>elasticity</strong>: ridings with closer races (smaller margin between first and second place) respond more to swing (elasticity up to 1.30), and safe seats respond less (down to 0.70). This avoids uniform swing and lets marginal seats move more.
+          </p>
+          <p>
+            <strong>Seat outcomes.</strong> For each ride, the party with the highest simulated vote share wins that seat in that run. After many runs (e.g. 250–1,000), the app reports seat-count summaries (mean, median, 5th and 95th percentiles), the probability each party wins a majority or plurality, and per-riding win probabilities. The “Projected popular vote” table shows the <strong>median</strong> simulated vote share (national and by province) across runs.
+          </p>
+          <p>
+            <strong>Data.</strong> Riding-level baseline data comes from the 2025 federal election results by electoral district. All projections are conditional on that baseline and on the polling and parameters you supply; they are not predictions of future elections.
+          </p>
+          </div>
+        ) : null}
+      </section>
+
+      <footer className="footerNote">
+        <span>Created by <strong>Giorgi Buzaladze</strong></span>
+        <span className="footerLinks">
+          <a href="https://giobuzala.com/" target="_blank" rel="noopener noreferrer">Website</a>
+          <span className="footerSep"> · </span>
+          <a href="https://github.com/" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <span className="footerSep"> · </span>
+          <a href="https://www.linkedin.com/in/giorgibuzaladze/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </span>
+      </footer>
     </main>
   );
 }

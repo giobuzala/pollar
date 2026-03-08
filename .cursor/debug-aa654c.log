@@ -1,0 +1,24 @@
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:loadMap","message":"loadMap started","data":{},"hypothesisId":"A","timestamp":1773006726157}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:loadMap","message":"loadMap started","data":{},"hypothesisId":"A","timestamp":1773006726158}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:afterFetch","message":"district fetch done","data":{"status":200,"ok":true,"contentType":"application/geo+json"},"hypothesisId":"B","timestamp":1773006726165}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:afterFetch","message":"district fetch done","data":{"status":200,"ok":true,"contentType":"application/geo+json"},"hypothesisId":"B","timestamp":1773006726318}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:afterJson","message":"districts parsed","data":{"featureCount":352},"hypothesisId":"B","timestamp":1773006726518}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:unmounted","message":"isMounted false before setGeojson","data":{},"hypothesisId":"D","timestamp":1773006726519}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:afterJson","message":"districts parsed","data":{"featureCount":352},"hypothesisId":"B","timestamp":1773006726863}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:beforeTransform","message":"before geoJsonToWGS84","data":{},"hypothesisId":"C","timestamp":1773006726863}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:loadMap","message":"loadMap started","data":{},"hypothesisId":"A","timestamp":1773006874533}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:loadMap","message":"loadMap started","data":{},"hypothesisId":"A","timestamp":1773006874534}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:afterFetch","message":"district fetch done","data":{"status":200,"ok":true,"contentType":"application/geo+json"},"hypothesisId":"B","timestamp":1773006874540}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:afterFetch","message":"district fetch done","data":{"status":200,"ok":true,"contentType":"application/geo+json"},"hypothesisId":"B","timestamp":1773006874722}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:afterJson","message":"districts parsed","data":{"featureCount":352},"hypothesisId":"B","timestamp":1773006874925}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:unmounted","message":"isMounted false before setGeojson","data":{},"hypothesisId":"D","timestamp":1773006874925}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:afterJson","message":"districts parsed","data":{"featureCount":352},"hypothesisId":"B","timestamp":1773006875262}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:beforeTransform","message":"before geoJsonToWGS84","data":{},"hypothesisId":"C","timestamp":1773006875263}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:loadMap","message":"loadMap started","data":{},"hypothesisId":"A","timestamp":1773006946955}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:loadMap","message":"loadMap started","data":{},"hypothesisId":"A","timestamp":1773006946956}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:afterFetch","message":"district fetch done","data":{"status":200,"ok":true,"contentType":"application/geo+json"},"hypothesisId":"B","timestamp":1773006946963}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:afterFetch","message":"district fetch done","data":{"status":200,"ok":true,"contentType":"application/geo+json"},"hypothesisId":"B","timestamp":1773006947129}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:afterJson","message":"districts parsed","data":{"featureCount":352},"hypothesisId":"B","timestamp":1773006947293}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:unmounted","message":"isMounted false before setGeojson","data":{},"hypothesisId":"D","timestamp":1773006947293}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:afterJson","message":"districts parsed","data":{"featureCount":352},"hypothesisId":"B","timestamp":1773006947582}
+{"sessionId":"aa654c","location":"ProjectionMap.tsx:beforeTransform","message":"before geoJsonToWGS84","data":{},"hypothesisId":"C","timestamp":1773006947582}

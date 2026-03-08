@@ -55,20 +55,21 @@ load_baseline_data <- function(csv_path) {
   province_names <- names(DEFAULT_PROV_WEIGHTS)
   election_results <- election_results[, province_names, drop = FALSE]
 
+  # Normalize riding names: em dash (U+2014) -> en dash (U+2013) to match GeoJSON/frontend
   riding_base <- election_results_raw |>
     dplyr::transmute(
       PROVINCE,
       FED_CODE = suppressWarnings(as.integer(FED_CODE)),
-      FED_NAME,
+      FED_NAME = gsub("\u2014", "\u2013", FED_NAME, fixed = TRUE),
       Liberal = VOTE_PCT_Liberal,
       Conservative = VOTE_PCT_Conservative,
       Bloc = VOTE_PCT_Bloc,
       NDP = VOTE_PCT_NDP,
       Green = VOTE_PCT_Green,
-      Other = VOTE_PCT_Other,
-      WINNER
-    ) |>
-    dplyr::arrange(PROVINCE, FED_CODE)
+      Other = VOTE_PCT_Other
+    )
+  riding_base$WINNER <- PARTIES[max.col(as.matrix(riding_base[, PARTIES]), ties.method = "first")]
+  riding_base <- dplyr::arrange(riding_base, PROVINCE, FED_CODE)
 
   national_baseline <- colSums(riding_base[, PARTIES], na.rm = TRUE) / nrow(riding_base)
 
