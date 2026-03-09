@@ -1,0 +1,9 @@
+# Render Blueprint: pollar backend (R Plumber API).
+# Deploy from repo root; frontend is deployed separately on Vercel.
+services:
+  - type: web
+    runtime: docker
+    name: pollar-api
+    dockerfilePath: backend/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
