@@ -273,7 +273,7 @@ function App() {
             </p>
             <h3 className="methodologyTitle">Input</h3>
             <p>
-              Enter either a single national poll (vote shares by party) or separate provincial polls for each province. In national mode, the app converts the national poll into province-level estimates by applying the national swing — the difference between the poll and the 2025 national result — to each province’s 2025 result, then renormalizing. The Bloc Québécois is included only in Quebec; its share is set to zero elsewhere, and the remaining parties' shares are rescaled accordingly. A good source for current Canadian polling data is <a href="https://338canada.com/polls.htm" target="_blank" rel="noopener noreferrer">338Canada</a>.
+              Enter either a single national poll (vote shares by party) or separate provincial polls for each province. In national mode, the app converts the national poll into province-level estimates by applying the national swing — the difference between the poll and the 2025 national result — to each province’s 2025 result, then renormalizing. The Bloc Québécois is included only in Quebec; its share is set to zero elsewhere, and the remaining parties’ shares are rescaled accordingly. A good source for current Canadian polling data is <a href="https://338canada.com/polls.htm" target="_blank" rel="noopener noreferrer">338Canada</a>.
             </p>
             <h3 className="methodologyTitle">Poll Uncertainty</h3>
             <p>

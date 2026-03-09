@@ -1,6 +1,7 @@
 # pollar backend: R Plumber API for Render (or any Docker host).
 # Build from repo root: docker build -f backend/Dockerfile .
-FROM rocker/r-ver:4.4.2
+# Use rstudio/plumber so plumber is pre-installed; add remaining deps.
+FROM rstudio/plumber:latest
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libcurl4-openssl-dev \
@@ -8,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN R -e "install.packages(c('plumber', 'dplyr', 'tidyr', 'readr', 'tibble', 'jsonlite', 'MCMCpack'), repos = 'https://cloud.r-project.org/')"
+RUN R -e "pkgs <- c('dplyr', 'tidyr', 'readr', 'tibble', 'jsonlite', 'MCMCpack'); install.packages(pkgs, repos = 'https://cloud.r-project.org/'); if (!all(sapply(c('plumber', pkgs), require, character.only = TRUE, quietly = TRUE))) stop('Required package missing')"
 
 WORKDIR /app
 
