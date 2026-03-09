@@ -50,7 +50,7 @@ function ParamInfoButton() {
       {show ? (
         <div className="paramInfoTooltip" role="tooltip">
           <p><strong>Simulations</strong>: How many times the forecast runs. Higher values give more reliable results but take longer to compute.</p>
-          <p><strong>Swing method</strong>: How to apply poll-to-election swing: Proportional uses logit-scale swings; Absolute uses raw percentage-point changes.</p>
+          <p><strong>Swing method</strong>: How to apply poll-to-election swing. <strong className="paramInfoWhite">Proportional</strong> scales swing relative to each party's starting strength, so extreme values move less. <strong className="paramInfoWhite">Absolute</strong> shifts every party by the same raw percentage points.</p>
           <p><strong>Total sample size</strong>: Estimated poll size. Higher values reduce uncertainty in the projected outcomes.</p>
         </div>
       ) : null}

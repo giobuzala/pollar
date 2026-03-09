@@ -268,24 +268,29 @@ function App() {
         </button>
         {methodologyOpen ? (
           <div className="methodologyContent">
-          <p>
-            pollar projects federal seat outcomes from polling data using a <strong>Monte Carlo simulation</strong> with riding-level swing. The baseline is the <strong>2025 federal election</strong>: actual vote shares by electoral district and by province.
-          </p>
-          <p>
-            <strong>Input.</strong> You can enter either a single <strong>national poll</strong> (vote shares by party) or <strong>provincial polls</strong> for each province. In national mode, the app converts the national poll into province-level estimates by applying the national swing (poll minus 2025 national result) to each province’s 2025 result, then normalizing. The Bloc Québécois is included only in Quebec; outside Quebec it is set to zero and other shares are rescaled.
-          </p>
-          <p>
-            <strong>Poll uncertainty.</strong> The model treats the input poll(s) as uncertain. For each province, it draws simulated vote shares from a <strong>Dirichlet distribution</strong> whose mean is your entered shares and whose concentration comes from an effective sample size (default total <em>n</em> = 2,000, allocated by province population weight, with a design effect of 1.25). So each simulation uses a slightly different “poll” consistent with sampling error.
-          </p>
-          <p>
-            <strong>Swing and elasticity.</strong> In each simulation, for each province, the difference between the simulated provincial poll and the 2025 provincial result is computed as a “swing.” You can choose <strong>Absolute</strong> swing (raw difference in vote share) or <strong>Proportional</strong> (logit-space difference). That swing is applied to every riding in the province using a riding-level <strong>elasticity</strong>: ridings with closer races (smaller margin between first and second place) respond more to swing (elasticity up to 1.30), and safe seats respond less (down to 0.70). This avoids uniform swing and lets marginal seats move more.
-          </p>
-          <p>
-            <strong>Seat outcomes.</strong> For each ride, the party with the highest simulated vote share wins that seat in that run. After many runs (e.g. 250–1,000), the app reports seat-count summaries (mean, median, 5th and 95th percentiles), the probability each party wins a majority or plurality, and per-riding win probabilities. The “Projected popular vote” table shows the <strong>median</strong> simulated vote share (national and by province) across runs.
-          </p>
-          <p>
-            <strong>Data.</strong> Riding-level baseline data comes from the 2025 federal election results by electoral district. All projections are conditional on that baseline and on the polling and parameters you supply; they are not predictions of future elections.
-          </p>
+            <p>
+              This app projects federal seat outcomes from polling data using a Monte Carlo simulation with riding-level swing. The baseline is the 2025 federal election: actual vote shares by electoral district and by province.
+            </p>
+            <h3 className="methodologyTitle">Input</h3>
+            <p>
+              Enter either a single national poll (vote shares by party) or separate provincial polls for each province. In national mode, the app converts the national poll into province-level estimates by applying the national swing — the difference between the poll and the 2025 national result — to each province’s 2025 result, then renormalizing. The Bloc Québécois is included only in Quebec; its share is set to zero elsewhere, and the remaining parties' shares are rescaled accordingly. A good source for current Canadian polling data is <a href="https://338canada.com/polls.htm" target="_blank" rel="noopener noreferrer">338Canada</a>.
+            </p>
+            <h3 className="methodologyTitle">Poll Uncertainty</h3>
+            <p>
+              The model treats input poll(s) as uncertain rather than exact. For each province, it draws simulated vote shares from a Dirichlet distribution whose mean equals your entered shares and whose concentration reflects an effective sample size (default: total n=2,000, allocated by province population weight, with a design effect of 1.25). Each simulation therefore uses a slightly different “poll” consistent with real-world sampling error.
+            </p>
+            <h3 className="methodologyTitle">Swing and Elasticity</h3>
+            <p>
+              In each simulation, the difference between the simulated provincial vote share and the 2025 provincial result is computed as the “swing.” You can choose between two swing methods: <strong>Absolute</strong> (raw difference in vote share) or <strong>Proportional</strong> (difference in logit space). The swing is then applied to every riding in the province using a riding-level elasticity: competitive ridings — those with a smaller margin between first and second place — respond more strongly to swing (elasticity up to 1.30), while safe seats respond less (down to 0.70). This avoids the distortions of uniform swing and allows marginal seats to move more realistically.
+            </p>
+            <h3 className="methodologyTitle">Seat Outcomes</h3>
+            <p>
+              In each simulation run, the party with the highest vote share in a riding wins that seat. After many runs (250–1,000 recommended), the app reports seat-count summaries, each party’s probability of winning a majority or plurality, and per-riding win probabilities. The <strong>Projected Popular Vote</strong> table shows median simulated vote shares, both nationally and by province, across all runs.
+            </p>
+            <h3 className="methodologyTitle">Data</h3>
+            <p>
+              Riding-level baseline data comes from the 2025 federal election results by electoral district. All projections are conditional on that baseline and on the polling inputs and parameters you supply; they are not predictions of future elections.
+            </p>
           </div>
         ) : null}
       </section>
