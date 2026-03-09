@@ -747,7 +747,7 @@
   border: 1px solid var(--polar-border-soft);
   border-radius: 10px;
   box-shadow: 0 6px 20px var(--polar-shadow-strong);
-  z-index: 30;
+  z-index: 1100;
   max-height: 280px;
   overflow-y: auto;
 }
