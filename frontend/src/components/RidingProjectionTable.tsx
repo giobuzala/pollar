@@ -2,7 +2,8 @@
  * Filterable, sortable table of riding-level projections: incumbent, projected winner,
  * and per-party win probability. Uses multi-select filters for province, incumbent, and winner.
  */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { PARTY_COLORS } from "../constants";
 import type { Party, RidingWinProbability } from "../types";
 import { PARTIES } from "../types";
@@ -55,6 +56,12 @@ function provinceOrderIndex(province: string): number {
   return i >= 0 ? i : PROVINCE_ORDER.length;
 }
 
+/** Get province from a riding row (API may use PROVINCE or province). */
+function getProvince(r: RidingWinProbability | Record<string, unknown>): string {
+  const row = r as Record<string, unknown>;
+  return String(row.PROVINCE ?? row.province ?? row.Province ?? "").trim();
+}
+
 function MultiSelectFilter<T extends string>({
   options,
   selected,
@@ -71,16 +78,75 @@ function MultiSelectFilter<T extends string>({
   optionOrder?: T[];
 }) {
   const [open, setOpen] = useState(false);
+  const [dropdownRect, setDropdownRect] = useState<{ top: number; left: number; width: number } | null>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const list = optionOrder ? optionOrder.filter((o) => options.includes(o)) : options;
+
+  const updateRect = useRef(() => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setDropdownRect({ top: rect.bottom + 4, left: rect.left, width: rect.width });
+    }
+  });
+
+  useEffect(() => {
+    if (!open) {
+      setDropdownRect(null);
+      return;
+    }
+    updateRect.current();
+    const onScrollOrResize = () => updateRect.current();
+    window.addEventListener("scroll", onScrollOrResize, true);
+    window.addEventListener("resize", onScrollOrResize);
+    return () => {
+      window.removeEventListener("scroll", onScrollOrResize, true);
+      window.removeEventListener("resize", onScrollOrResize);
+    };
+  }, [open]);
+
   const label = selected.length === 0 ? placeholder : selected.length === 1 ? selected[0] : `${selected.length} selected`;
 
   function toggle(opt: T) {
     onChange(selected.includes(opt) ? selected.filter((x) => x !== opt) : [...selected, opt]);
   }
 
+  const dropdownContent =
+    open && dropdownRect
+      ? createPortal(
+            <>
+              <div className="ridingMultiSelectBackdrop" aria-hidden onClick={() => setOpen(false)} />
+              <div
+                className="ridingMultiSelectDropdown"
+                role="listbox"
+                style={{
+                  position: "fixed",
+                  top: dropdownRect.top,
+                  left: dropdownRect.left,
+                  minWidth: dropdownRect.width,
+                  maxHeight: 220,
+                }}
+              >
+                {list.map((opt) => (
+                  <label key={opt} className="ridingMultiSelectOption">
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(opt)}
+                      onChange={() => toggle(opt)}
+                      className="ridingMultiSelectCheckbox"
+                    />
+                    <span>{opt}</span>
+                  </label>
+                ))}
+              </div>
+            </>,
+            document.body
+          )
+      : null;
+
   return (
     <div className="ridingMultiSelect">
       <button
+        ref={triggerRef}
         type="button"
         className="ridingTableFilter ridingMultiSelectTrigger"
         onClick={() => setOpen((o) => !o)}
@@ -91,24 +157,7 @@ function MultiSelectFilter<T extends string>({
         {label}
         <span className="ridingMultiSelectChevron" aria-hidden>▼</span>
       </button>
-      {open && (
-        <>
-          <div className="ridingMultiSelectBackdrop" aria-hidden onClick={() => setOpen(false)} />
-          <div className="ridingMultiSelectDropdown" role="listbox">
-            {list.map((opt) => (
-              <label key={opt} className="ridingMultiSelectOption">
-                <input
-                  type="checkbox"
-                  checked={selected.includes(opt)}
-                  onChange={() => toggle(opt)}
-                  className="ridingMultiSelectCheckbox"
-                />
-                <span>{opt}</span>
-              </label>
-            ))}
-          </div>
-        </>
-      )}
+      {dropdownContent}
     </div>
   );
 }
@@ -133,12 +182,12 @@ export function RidingProjectionTable({ ridingData }: RidingProjectionTableProps
   const sortedAndFiltered = useMemo(() => {
     let rows = [...ridingData];
     rows.sort((a, b) => {
-      const pa = provinceOrderIndex(String(a.PROVINCE ?? ""));
-      const pb = provinceOrderIndex(String(b.PROVINCE ?? ""));
+      const pa = provinceOrderIndex(getProvince(a));
+      const pb = provinceOrderIndex(getProvince(b));
       if (pa !== pb) return pa - pb;
       return String(a.FED_NAME ?? "").localeCompare(String(b.FED_NAME ?? ""));
     });
-    if (filterProvinces.length > 0) rows = rows.filter((r) => filterProvinces.includes(r.PROVINCE));
+    if (filterProvinces.length > 0) rows = rows.filter((r) => filterProvinces.includes(getProvince(r)));
     if (filterRiding.trim()) {
       const q = filterRiding.trim().toLowerCase();
       rows = rows.filter((r) => String(r.FED_NAME ?? "").toLowerCase().includes(q));
@@ -154,7 +203,7 @@ export function RidingProjectionTable({ ridingData }: RidingProjectionTableProps
   }, [ridingData, filterProvinces, filterRiding, filterWinners, filterIncumbents]);
 
   const provinces = useMemo(() => {
-    const set = new Set(ridingData.map((r) => r.PROVINCE));
+    const set = new Set(ridingData.map((r) => getProvince(r)).filter(Boolean));
     return PROVINCE_ORDER.filter((p) => set.has(p)).concat([...set].filter((p) => !PROVINCE_ORDER.includes(p)).sort());
   }, [ridingData]);
 
@@ -231,7 +280,7 @@ export function RidingProjectionTable({ ridingData }: RidingProjectionTableProps
             const projColor = projWinner != null && projWinner in PARTY_COLORS ? PARTY_COLORS[projWinner as Party] : undefined;
             return (
               <tr key={typeof r.FED_CODE !== "undefined" ? r.FED_CODE : String(r.FED_NAME)}>
-                <td>{r.PROVINCE ?? "—"}</td>
+                <td>{getProvince(r) || "—"}</td>
                 <td>{String(r.FED_NAME ?? "—").replace(/—/g, "–")}</td>
                 <td>
                   {incumbent != null ? (
