@@ -186,9 +186,7 @@ export function PollInputForm(props: PollInputFormProps) {
           <span>Simulations</span>
           <input
             type="number"
-            min={100}
-            max={10000}
-            step={100}
+            min={1}
             value={props.nSims}
             onChange={(event) => props.onNSimsChange(Number(event.target.value))}
           />
@@ -209,9 +207,7 @@ export function PollInputForm(props: PollInputFormProps) {
           <span>Total sample size</span>
           <input
             type="number"
-            min={500}
-            max={10000}
-            step={100}
+            min={1}
             value={props.totalN}
             onChange={(event) => props.onTotalNChange(Number(event.target.value))}
           />
