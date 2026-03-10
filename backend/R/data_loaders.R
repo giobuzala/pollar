@@ -1,5 +1,6 @@
-# data_loaders.R: baseline CSV loading, province vote shares, riding base table, national baseline.
-# Build per-province effective sample sizes from total_n and province weights (for Dirichlet).
+# data_loaders.R: baseline CSV loading, province vote shares, riding base table, national baseline
+
+# Build per-province effective sample sizes from total_n and province weights (for Dirichlet)
 build_effective_sample_sizes <- function(
   total_n = DEFAULT_TOTAL_N,
   deff = DEFAULT_DEFF,
@@ -9,7 +10,7 @@ build_effective_sample_sizes <- function(
   round(prov_n_raw / deff)
 }
 
-# Load and normalize baseline election CSV: province vote shares, riding base, national baseline.
+# Load and normalize baseline election CSV: province vote shares, riding base, national baseline
 load_baseline_data <- function(csv_path) {
   election_results_raw <- readr::read_csv(
     csv_path,
@@ -54,7 +55,7 @@ load_baseline_data <- function(csv_path) {
 
   election_results["Bloc", setdiff(colnames(election_results), "Quebec")] <- NA_real_
 
-  # Keep predictable column order for downstream form generation and joins.
+  # Keep predictable column order for downstream form generation and joins
   province_names <- names(DEFAULT_PROV_WEIGHTS)
   election_results <- election_results[, province_names, drop = FALSE]
 

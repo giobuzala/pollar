@@ -1,4 +1,4 @@
-# Shared constants for the forecast pipeline (must match frontend party order).
+# Shared constants for the forecast pipeline (must match frontend party order)
 PARTIES <- c("Liberal", "Conservative", "Bloc", "NDP", "Green", "Other")
 
 DEFAULT_PROV_WEIGHTS <- c(
@@ -17,11 +17,11 @@ DEFAULT_PROV_WEIGHTS <- c(
   "Nunavut" = 0.001
 )
 
-# Default effective sample size and design effect for Dirichlet poll simulation.
+# Default effective sample size and design effect for Dirichlet poll simulation
 DEFAULT_TOTAL_N <- 2000L
 DEFAULT_DEFF <- 1.25
 
-# Null-coalesce: use y when x is NULL (e.g. optional API payload fields).
+# Null-coalesce: use y when x is NULL (e.g. optional API payload fields)
 `%||%` <- function(x, y) {
   if (is.null(x)) y else x
 }
