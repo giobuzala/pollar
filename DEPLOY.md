@@ -15,7 +15,7 @@ Backend runs on **Render** (R/Plumber in Docker). Frontend runs on **Vercel** (V
    - **Dockerfile path:** `backend/Dockerfile`  
    - **Docker build context:** `.` (repo root)  
    - **Health check path:** `/health`
-6. Deploy. After the first successful deploy, note the service URL (e.g. `https://pollar-api.onrender.com`).
+6. Deploy. After the first successful deploy, note the service URL (e.g., `https://pollar-api.onrender.com`).
 
 Render sets `PORT` automatically; the backend already uses it.
 
@@ -26,7 +26,7 @@ Render sets `PORT` automatically; the backend already uses it.
 3. Vercel will detect Vite; build command `npm run build` and output `dist` are fine by default.
 4. Add an **Environment Variable** (Production and Preview if you want):
    - **Name:** `VITE_API_BASE_URL`  
-   - **Value:** your Render backend URL, e.g. `https://pollar-api.onrender.com`  
+   - **Value:** your Render backend URL, e.g., `https://pollar-api.onrender.com`  
    (No trailing slash.)
 5. Deploy.
 
@@ -40,7 +40,9 @@ The projection map needs GeoJSON. Add `frontend/public/data/federal-districts-20
 
 | Part     | Platform | URL / config |
 |----------|----------|----------------|
-| Backend  | Render   | e.g. `https://pollar-api.onrender.com` |
+| Backend  | Render   | e.g., `https://pollar-api.onrender.com` |
 | Frontend | Vercel   | Set env `VITE_API_BASE_URL` to the backend URL above |
 
-Build and run locally: start the backend with `Rscript run_api.R` from `backend/`, then run the frontend with `npm run dev` from `frontend/` (default API base is `http://localhost:8000`).
+## Build and run locally
+
+Start the backend with `Rscript run_api.R` from `backend/`, then run the frontend with `npm run dev` from `frontend/` (default API base is `http://localhost:8000`).

@@ -22,7 +22,7 @@ type PollInputFormProps = {
 /* Accept sum as 100% if within 0.05% (avoids float rounding issues). */
 const TOTAL_TOLERANCE = 0.0005;
 
-/** Format vote share for input: show whole or one decimal (e.g. "13" or "12.5") for easier typing. */
+/** Format vote share for input: show whole or one decimal (e.g., "13" or "12.5") for easier typing. */
 function formatPercentForInput(value: number): string {
   const n = Math.round(value * 1000) / 10;
   return n % 1 === 0 ? String(Math.round(n)) : n.toFixed(1);

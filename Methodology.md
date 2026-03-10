@@ -107,15 +107,15 @@ This produces one simulated winning party per riding for that Monte Carlo iterat
 
 The full process is repeated across many Monte Carlo iterations to produce a distribution of seat outcomes.
 
-The simulation is repeated thousands of times. Each iteration represents one plausible election outcome under polling uncertainty.
+The simulation is repeated the number of times specified by the user. Each iteration represents one plausible election outcome under polling uncertainty.
 
 Outputs include:
 
-- Mean and median projected seat counts
-- 5th and 95th percentile simulation intervals
+- Median projected seat counts
 - Probability of majority government
 - Probability of plurality (largest seat count)
-- Optional riding-level win probabilities
+- Median projected vote shares
+- Riding-level win probabilities
 
 The goal of the framework is to generate a distribution of plausible electoral outcomes under polling uncertainty rather than a single deterministic forecast.
 

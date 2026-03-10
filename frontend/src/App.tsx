@@ -130,7 +130,7 @@ function App() {
       return (
         <main className="layout loading">
           <p className="errorBox">Could not load app. {error}</p>
-          <p className="subtle">Make sure the API is running on port 8000 (e.g. <code>Rscript run_api.R</code> in the backend folder).</p>
+          <p className="subtle">Make sure the API is running on port 8000 (e.g., <code>Rscript run_api.R</code> in the backend folder).</p>
         </main>
       );
     }

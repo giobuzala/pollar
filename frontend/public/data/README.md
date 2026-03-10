@@ -16,6 +16,6 @@ The riding projection map needs GeoJSON boundary files:
    ```
    This produces `frontend/public/data/federal-districts-2025.geojson`.
 
-3. For the optional Canada outline, add `canada-outline.geojson` to this folder (e.g. from [Open Government](https://open.canada.ca) or by extracting from the same source).
+3. For the optional Canada outline, add `canada-outline.geojson` to this folder (e.g., from [Open Government](https://open.canada.ca) or by extracting from the same source).
 
 Without these files, the app will show "Map data unavailable" in the Riding Projection Map section.
