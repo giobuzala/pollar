@@ -33,9 +33,7 @@ pollar/
 │   ├── public/data/           # GeoJSON for map (see README there)
 │   └── scripts/
 │       └── convert_federal_districts.py  # Shapefile → GeoJSON for map
-├── scripts/                   # R analysis / one-off scripts
-│   ├── Functions.R            # Helpers for seat forecast (logit, Dirichlet, swing, elasticity)
-│   └── Federal Election Seat Forecast.R  # Standalone Monte Carlo forecast + plots (see Methodology.md)
+├── Data/                      # Baseline CSV (2025 federal election by district); see backend/README
 ```
 
 ## Stack

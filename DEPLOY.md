@@ -32,9 +32,9 @@ Render sets `PORT` automatically; the backend already uses it.
 
 The frontend will call the Render API at the URL you set. The `frontend/vercel.json` rewrites ensure client-side routing works and `/data/*` static files are still served.
 
-## 3. Optional: map data
+## 3. Map data
 
-The projection map needs GeoJSON. If you haven’t already, add `frontend/public/data/federal-districts-2025.geojson` (see `frontend/public/data/README.md`). Commit and push so Vercel serves it.
+The projection map needs GeoJSON. Add `frontend/public/data/federal-districts-2025.geojson` (see `frontend/public/data/README.md`). Commit and push so Vercel serves it.
 
 ## Summary
 
