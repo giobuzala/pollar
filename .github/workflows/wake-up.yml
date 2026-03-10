@@ -1,6 +1,5 @@
 # Ping the Render backend periodically so the free-tier instance doesn't spin down.
 # Without this, the first request after ~15 min of inactivity can take 50+ seconds (cold start).
-# Set RENDER_BACKEND_URL in repo Secrets (or Variables) if your backend URL differs.
 name: Wake up
 
 on:
