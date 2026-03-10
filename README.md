@@ -6,6 +6,8 @@ An interactive web app that generates Canadian federal election seat projections
 
 pollar is an interactive forecasting tool that simulates plausible election outcomes under polling uncertainty. Instead of producing a single deterministic projection, it models the range of outcomes that could occur given current polling.
 
+Users enter their own national or provincial vote shares, which are then used as the basis for the simulation.
+
 Under the hood, the model:
 
 - Simulates province-level vote shares using a Dirichlet distribution to reflect polling uncertainty
@@ -13,7 +15,7 @@ Under the hood, the model:
 - Applies that swing to individual ridings using a competitiveness-based elasticity adjustment, so close ridings respond more strongly than safe seats
 - Renormalizes vote shares and determines winners in each riding for every simulation
 
-Aggregating thousands of simulations produces seat projections, probabilities of majority or plurality governments, and riding-level win probabilities.
+Aggregating the simulations produces seat projections, probabilities of majority or plurality governments, and riding-level win probabilities. The number of simulations is determined by the value entered by the user.
 
 For the full methodology (Dirichlet poll uncertainty, swing methods, and riding elasticity), see [Methodology.md](Methodology.md).
 
