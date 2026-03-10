@@ -10,7 +10,7 @@ source("R/data_loaders.R")
 source("R/model_core.R")
 source("R/input_transforms.R")
 
-b <- load_baseline_data("../Data/Canada 2025 Federal Election Results by Electoral District.csv")
+b <- load_baseline_data("../data/Canada 2025 Federal Election Results by Electoral District.csv")
 polls <- as.data.frame(b$election_results)
 prov_n <- build_effective_sample_sizes()
 

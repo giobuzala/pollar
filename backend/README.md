@@ -16,8 +16,8 @@ Listens on `http://0.0.0.0:8000`. The frontend calls `/meta`, `/forecast/nationa
 
 Place the baseline election CSV in one of:
 
-- `../Data/Canada 2025 Federal Election Results by Electoral District.csv` (project root)
-- `Data/Canada 2025 Federal Election Results by Electoral District.csv` (this directory)
+- `../data/Canada 2025 Federal Election Results by Electoral District.csv` (project root)
+- `data/Canada 2025 Federal Election Results by Electoral District.csv` (this directory)
 
 Expected columns include province, riding code/name, and vote counts or percentages by party (Liberal, Conservative, Bloc, NDP, Green, Other). See `R/data_loaders.R` for the exact structure.
 

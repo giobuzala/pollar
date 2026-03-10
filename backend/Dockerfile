@@ -13,8 +13,8 @@ RUN R -e "pkgs <- c('dplyr', 'tidyr', 'readr', 'tibble', 'jsonlite', 'MCMCpack')
 
 WORKDIR /app
 
-# Data and backend code (paths in plumber.R expect backend/ and ../Data/)
-COPY Data /app/Data
+# data and backend code (paths in plumber.R expect backend/ and ../data/)
+COPY data /app/data
 COPY backend /app/backend
 
 WORKDIR /app/backend

@@ -13,11 +13,11 @@ source("R/data_loaders.R")
 source("R/model_core.R")
 source("R/input_transforms.R")
 
-# Baseline CSV path: try project root then backend/Data
-BASELINE_CSV <- if (file.exists("../Data/Canada 2025 Federal Election Results by Electoral District.csv")) {
-  "../Data/Canada 2025 Federal Election Results by Electoral District.csv"
+# Baseline CSV path: try project root then backend/data
+BASELINE_CSV <- if (file.exists("../data/Canada 2025 Federal Election Results by Electoral District.csv")) {
+  "../data/Canada 2025 Federal Election Results by Electoral District.csv"
 } else {
-  "Data/Canada 2025 Federal Election Results by Electoral District.csv"
+  "data/Canada 2025 Federal Election Results by Electoral District.csv"
 }
 BASELINE <- load_baseline_data(BASELINE_CSV)
 

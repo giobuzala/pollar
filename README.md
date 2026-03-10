@@ -30,7 +30,7 @@ pollar/
 ├── DEPLOY.md                             # Deploy backend (Render) and frontend (Vercel)
 ├── render.yaml                           # Render blueprint for backend
 ├── .github/workflows/wake-up.yml         # Ping backend to keep it active
-├── Data/                                 # Baseline CSV (2025 election by district); see backend/README
+├── data/                                 # Baseline CSV (2025 election by district); see backend/README
 ├── backend/
 │   ├── plumber.R                         # API: /meta, /forecast/national, /forecast/provincial
 │   ├── run_api.R                         # Start API server
