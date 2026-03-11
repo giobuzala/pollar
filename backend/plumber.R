@@ -35,9 +35,11 @@ function(req, res) {
 
 #* @apiTitle Canada Election Forecast API
 
-#* Health check
+#* Health check (GET or HEAD for uptime monitors)
 #* @get /health
-function() {
+#* @head /health
+function(res = NULL) {
+  if (!is.null(res)) res$status <- 200L
   list(status = "ok")
 }
 
