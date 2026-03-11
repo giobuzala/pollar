@@ -4,7 +4,7 @@ The pollar backend (`backend/R/model_core.R` and related R files) implements a p
 
 ## Model overview
 
-The model operates as follows.
+The model operates as follows:
 
 ### 1) Simulate province-level polling vote shares using a Dirichlet distribution to reflect sampling uncertainty
 
