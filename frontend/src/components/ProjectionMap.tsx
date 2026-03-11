@@ -102,8 +102,8 @@ function ridingSearchScore(queryWords: string[], riding: RidingWinProbability): 
 const WIDTH = 1000;
 const HEIGHT = 650;
 const MIN_SCALE = 1;
-const MAX_SCALE = 8;
-const FOCUS_MAX_SCALE = 24;
+const MAX_SCALE = 80;
+const FOCUS_MAX_SCALE = 80;
 
 /** Get a string from a riding row; API may use FED_NAME or fed_name etc. */
 function getRidingName(r: RidingWinProbability | Record<string, unknown>): string {
@@ -356,8 +356,10 @@ export function ProjectionMap({ ridingData, embedded = false }: ProjectionMapPro
       FOCUS_MAX_SCALE,
       Math.max(MIN_SCALE, Math.min(scaleX, scaleY))
     );
-    const x = PAD - scale * minX;
-    const y = PAD - scale * minY;
+    const centerX = (minX + maxX) / 2;
+    const centerY = (minY + maxY) / 2;
+    const x = WIDTH / 2 - scale * centerX;
+    const y = HEIGHT / 2 - scale * centerY;
     setViewport({ scale, x, y });
   }
 
