@@ -31,7 +31,6 @@ pollar/
 ├── Methodology.md                        # Model description (Dirichlet, swing, elasticity)
 ├── DEPLOY.md                             # Deploy backend (Render) and frontend (Vercel)
 ├── render.yaml                           # Render blueprint for backend
-├── .github/workflows/wake-up.yml         # Ping backend to keep it active
 ├── data/                                 # Baseline CSV (2025 election by district); see backend/README
 ├── backend/
 │   ├── plumber.R                         # API: /meta, /forecast/national, /forecast/provincial

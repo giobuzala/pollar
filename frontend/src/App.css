@@ -3,6 +3,7 @@
   max-width: 1480px;
   margin: 0 auto;
   padding: 1.25rem;
+  min-width: 0; /* allow shrinking in flex/grid contexts */
 }
 
 .layout {
@@ -190,6 +191,7 @@
 
 .ridingTableWrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid var(--polar-border-soft);
   border-radius: 10px;
   margin-top: 0.25rem;
@@ -472,7 +474,7 @@
   display: flex;
   align-items: center;
   margin-left: 0.5rem;
-  padding-top: 1.83rem;
+  padding-top: 1.84rem;
 }
 
 .paramInfoButton {
@@ -559,6 +561,7 @@
 
 .provinceTableWrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid var(--polar-border-soft);
   border-radius: 10px;
   margin-top: 0.5rem;
@@ -578,12 +581,18 @@
   text-align: center;
 }
 
+.provinceTable tr:last-child th,
+.provinceTable tr:last-child td {
+  border-bottom: none;
+}
+
 .provinceTable th:first-child,
 .provinceTable td:first-child {
   text-align: left;
   position: sticky;
   left: 0;
   background: var(--polar-bg);
+  padding-left: 0.7rem;
 }
 
 .provinceTable th.colNational,
@@ -1035,6 +1044,7 @@
   margin: 0 0.15rem;
 }
 
+/* ---------- Responsive: tablet and below ---------- */
 @media (max-width: 1100px) {
   .resultsGrid {
     grid-template-columns: 1fr;
@@ -1045,5 +1055,195 @@
   .gridSingle,
   .settingsRow {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- Mobile: small tablet and large phone ---------- */
+@media (max-width: 768px) {
+  #root {
+    padding: 0.85rem;
+  }
+
+  .hero {
+    padding: 1rem 1rem 1.25rem;
+    border-radius: 14px;
+  }
+
+  .hero h1 {
+    font-size: 1.65rem;
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+  }
+
+  .panel {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .panel h2 {
+    font-size: 1.15rem;
+  }
+
+  .modeToggle {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .modeToggle button {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+    min-height: 2.75rem;
+  }
+
+  /* National poll: 2 columns on tablet so inputs stay usable */
+  .nationalPollRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .nationalPollRow .field input {
+    max-width: none;
+  }
+
+  .nationalPollRow .field.totalCol {
+    grid-column: 1 / -1;
+  }
+
+  .nationalPollRow .field.totalCol input.totalValueInput {
+    max-width: 8rem;
+  }
+
+  .pollingSection {
+    padding: 1rem;
+  }
+
+  .settingsRow {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .paramInfoWrap {
+    grid-column: 1 / -1;
+    margin-left: 0;
+    margin-top: 0.25rem;
+    padding-top: 0;
+    justify-content: flex-start;
+  }
+
+  .paramInfoTooltip {
+    width: min(280px, calc(100vw - 2rem));
+    right: 0;
+    left: 0;
+  }
+
+  .seatRowHeader {
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    gap: 0.25rem;
+  }
+
+  .seatBars {
+    gap: 1.25rem;
+  }
+
+  .currentSeatDistribution .seatBars {
+    gap: 1.5rem;
+  }
+
+  .probabilities {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    font-size: 0.78rem;
+  }
+
+  .mapWrapLeaflet {
+    height: 420px;
+    min-height: 320px;
+  }
+
+  .mapWrap {
+    min-height: 320px;
+  }
+
+  .methodologyToggle {
+    font-size: 1.1rem;
+  }
+
+  .footerNote {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+/* ---------- Mobile: phone ---------- */
+@media (max-width: 480px) {
+  #root {
+    padding: 0.65rem;
+  }
+
+  .hero {
+    padding: 0.85rem 0.75rem 1rem;
+    border-radius: 12px;
+  }
+
+  .hero h1 {
+    font-size: 1.45rem;
+  }
+
+  .hero p {
+    font-size: 0.9rem;
+  }
+
+  .panel {
+    padding: 0.85rem;
+  }
+
+  .panel h2 {
+    font-size: 1.05rem;
+  }
+
+  .modeToggle {
+    flex-direction: column;
+  }
+
+  .modeToggle button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* National poll: 2 columns kept; labels can be shortened visually via font-size */
+  .nationalPollRow .field span {
+    font-size: 0.78rem;
+  }
+
+  .settingsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .primaryButton {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-top: 0.75rem;
+  }
+
+  .ridingTable {
+    font-size: 0.82rem;
+  }
+
+  .ridingTable th,
+  .ridingTable td {
+    padding: 0.4rem 0.5rem;
+  }
+
+  .mapControlsOverlay button {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .mapTooltip {
+    max-width: min(320px, calc(100vw - 1.5rem));
   }
 }
