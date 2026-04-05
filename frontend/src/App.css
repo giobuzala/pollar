@@ -1170,11 +1170,15 @@
   .methodologyToggle {
     font-size: 1.1rem;
   }
+}
 
+/* Stacked, centered footer only on narrower viewports (not full 768px tablet band) */
+@media (max-width: 640px) {
   .footerNote {
     flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
   }
 }
 
