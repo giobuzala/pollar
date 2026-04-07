@@ -84,6 +84,10 @@
   color: var(--polar-text-muted);
 }
 
+.panel > h2 + p.voteShareIntro {
+  margin: 0.5rem 0 1.1rem;
+}
+
 .methodologySection {
   margin-top: 1.25rem;
 }

@@ -187,7 +187,7 @@ function App() {
       {voteShareTable ? (
         <section className="panel">
           <h2>Projected Popular Vote</h2>
-          <p className="subtle">
+          <p className="subtle voteShareIntro">
             Median popular vote share by party from the simulation.
           </p>
           <div className="provinceTableWrap">
